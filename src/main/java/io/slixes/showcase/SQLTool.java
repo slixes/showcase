@@ -7,7 +7,12 @@ import io.vertx.ext.sql.SQLConnection;
 public class SQLTool {
 
   public static void execute(SQLConnection conn, String sql, Handler<Boolean> done) {
-    conn.execute(sql, res -> done.handle(res.succeeded()));
+    conn.execute(sql, res -> {
+      if (res.failed()) {
+        throw new RuntimeException(res.cause());
+      }
+      done.handle(res.succeeded());
+    });
   }
 
   public static void query(SQLConnection conn, String sql, Handler<ResultSet> done) {

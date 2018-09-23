@@ -46,17 +46,22 @@ public class CreateHandler implements Handler<RoutingContext> {
 
         SQLTool.execute(connection.result(), executeStatament, insert -> {
           // commit data
-
           System.out.println("Operation result: " + insert.booleanValue());
-          SQLTool.endTx(connection.result(), handler -> {
 
-            connection.result().close(done -> {
-              if (done.failed()) {
-                throw new RuntimeException(done.cause());
-              }
-              routingContext.response().end("all done");
+          if(insert.booleanValue()) {
+
+            SQLTool.endTx(connection.result(), handler -> {
+
+              connection.result().close(done -> {
+                if (done.failed()) {
+                  throw new RuntimeException(done.cause());
+                }
+                routingContext.response().end("all done");
+              });
             });
-          });
+          } else {
+            routingContext.response().end("Error");
+          }
         });
       });
     });
