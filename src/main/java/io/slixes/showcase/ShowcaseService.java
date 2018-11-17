@@ -11,7 +11,7 @@ public class ShowcaseService extends AbstractVerticle {
 
   @Override
   public void start() {
-    Router router = Router.router(Vertx.vertx());
+    Router router = Router.router(vertx);
     router.route().handler(BodyHandler.create());
 
     router.route("/ping").handler(routingContext -> routingContext.response().end("Alive!"));
