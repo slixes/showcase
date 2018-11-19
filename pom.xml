@@ -52,13 +52,9 @@
     <!-- Dependencies -->
     <vertx.version>3.5.4</vertx.version>
     <slf4j.version>1.7.25</slf4j.version>
-    <hsqldb.version>2.4.1</hsqldb.version>
-    <mysql.version>6.0.6</mysql.version>
     <swagger.version>2.0.5</swagger.version>
-
     <!-- Plugins -->
     <vertx.maven.plugin.version>1.0.17</vertx.maven.plugin.version>
-
     <vertx.verticle>io.slixes.showcase.ShowcaseService</vertx.verticle>
   </properties>
 
@@ -103,23 +99,19 @@
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
-      <artifactId>vertx-mysql-postgresql-client</artifactId>
+      <artifactId>vertx-auth-oauth2</artifactId>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-jdbc-client</artifactId>
+      <groupId>io.swagger.core.v3</groupId>
+      <artifactId>swagger-core</artifactId>
     </dependency>
     <dependency>
       <groupId>io.swagger.core.v3</groupId>
       <artifactId>swagger-annotations</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.swagger.core.v3</groupId>
-      <artifactId>swagger-core</artifactId>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
