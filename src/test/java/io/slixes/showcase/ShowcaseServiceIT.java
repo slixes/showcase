@@ -8,7 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(VertxExtension.class)
 public class ShowcaseServiceIT {
 
-
   @Test
   void start_server() {
     Vertx vertx = Vertx.vertx();
