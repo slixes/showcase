@@ -6,12 +6,13 @@
   <parent>
     <groupId>io.slixes</groupId>
     <artifactId>slixes-parent</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.slixes</groupId>
   <artifactId>showcase</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
 
   <name>Slixes - Showcase</name>
 
