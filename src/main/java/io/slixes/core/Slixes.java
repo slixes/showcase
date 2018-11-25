@@ -15,9 +15,9 @@ public interface Slixes {
 
   String HTTP = "http";
 
-  static Map<String, HttpServer> boot(Vertx vertx, JsonObject config) {
+  static Map<String, HttpServer> boot(Vertx vertx, JsonObject config) throws SlixesException {
     if (config.isEmpty() || !config.containsKey("http")) {
-      throw new IllegalArgumentException("Invalid configuration specified");
+      throw new SlixesException("HTTP configuration is not available");
     } else {
       try {
         JsonArray http = config.getJsonArray(HTTP);
@@ -29,8 +29,8 @@ public interface Slixes {
           httpServers.put(UUID.randomUUID().toString(), httpServer);
         });
         return httpServers;
-      } catch(RuntimeException ex) {
-        throw new VertxException("Error booting service", ex);
+      } catch (Exception ex) {
+        throw new SlixesException("HTTP configuration is invalid", ex);
       }
     }
   }
