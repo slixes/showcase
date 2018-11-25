@@ -28,50 +28,12 @@ import java.util.concurrent.TimeUnit;
 public class HttpOptionsTest {
 
 
-  @BeforeAll
-  static void boot() {
-    System.out.println("Executed before anything");
-  }
-
-  @AfterAll
-  static void shutdown() {
-    System.out.println("Executed last");
-  }
-
-
-  @BeforeEach
-  void preTest() {
-    System.out.println("pre");
-  }
-
-  @AfterEach
-  void postTest() {
-    System.out.println("post");
-  }
-
-
-  @Test
-  public void stupidTest() {
-    Assertions.assertEquals(6, 6);
-    HttpServerOptions options = new HttpServerOptions();
-    options.setPort(8080);
-    String encode = Json.encode(options);
-    HttpServerOptions httpClientOptions = Json.decodeValue(encode, HttpServerOptions.class);
-    Assertions.assertEquals(httpClientOptions, options);
-    JksOptions jksOptions = new JksOptions().setPath("/opt/usr/services/myservice.jks").setPassword("testpassword");
-    String jksOptionsEncoded = Json.encode(jksOptions);
-    JksOptions jksOptionsDecoded = Json.decodeValue(jksOptionsEncoded, JksOptions.class);
-    Assertions.assertEquals(jksOptionsDecoded, jksOptions);
-
-  }
-
-
   @Test
   public void testSlixesLoading() throws InterruptedException {
     final Vertx vertx = Vertx.vertx();
     VertxTestContext testContext = new VertxTestContext();
 
-    Checkpoint readCheckpoint = testContext.checkpoint(3);
+    Checkpoint readCheckpoint = testContext.checkpoint(4);
 
     vertx.fileSystem().readFile("service.json", asyncConfigRead -> {
       Assertions.assertTrue(asyncConfigRead.succeeded());
@@ -88,27 +50,24 @@ public class HttpOptionsTest {
 
     vertx.fileSystem().readFile("service-invalid.json", asyncConfigRead -> {
       Assertions.assertTrue(asyncConfigRead.succeeded());
-      Assertions.assertThrows(SlixesException.class, () -> {
-        Slixes.boot(vertx, asyncConfigRead.result().toJsonObject());
-
-      });
+      Assertions.assertThrows(SlixesException.class, () -> Slixes.boot(vertx, asyncConfigRead.result().toJsonObject()));
       readCheckpoint.flag();
-
     });
 
     vertx.fileSystem().readFile("service-empty.json", asyncConfigRead -> {
       Assertions.assertTrue(asyncConfigRead.succeeded());
-      Assertions.assertThrows(SlixesException.class, () -> {
-        Slixes.boot(vertx, asyncConfigRead.result().toJsonObject());
-      });
+      Assertions.assertThrows(SlixesException.class, () -> Slixes.boot(vertx, asyncConfigRead.result().toJsonObject()));
       readCheckpoint.flag();
-
     });
+
+    vertx.fileSystem().readFile("service-error.json", asyncConfigRead -> {
+      Assertions.assertTrue(asyncConfigRead.succeeded());
+      Assertions.assertThrows(SlixesException.class, () -> Slixes.boot(vertx, asyncConfigRead.result().toJsonObject()));
+      readCheckpoint.flag();
+    });
+
     Assertions.assertTrue(testContext.awaitCompletion(1, TimeUnit.SECONDS));
     Assertions.assertFalse(testContext.failed());
-  }
-
-  private void throwing() {
   }
 }
 
