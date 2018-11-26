@@ -13,6 +13,6 @@ public interface InfoHandler extends Handler<RoutingContext> {
   })
   static Handler<RoutingContext> create() {
 
-    return new InfoHandlerImpl();
+    return routingContext -> routingContext.response().end("ok");
   }
 }
