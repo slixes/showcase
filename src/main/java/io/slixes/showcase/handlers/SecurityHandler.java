@@ -11,10 +11,8 @@ public interface SecurityHandler extends Handler<RoutingContext> {
       if (routingContext.request().headers().contains("a")) {
         routingContext.response()
             .end(new JsonObject().put("error", "Invalid idempotent id").toString());
-
       }
       routingContext.next();
     };
   }
-
 }

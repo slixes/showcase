@@ -10,6 +10,7 @@ import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.net.JksOptions;
+import io.vertx.ext.web.Router;
 import io.vertx.junit5.Checkpoint;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
@@ -33,6 +34,8 @@ public class HttpOptionsTest {
     final Vertx vertx = Vertx.vertx();
     VertxTestContext testContext = new VertxTestContext();
 
+    Router router = Router.router(vertx);
+
     Checkpoint readCheckpoint = testContext.checkpoint(4);
 
     vertx.fileSystem().readFile("service.json", asyncConfigRead -> {
@@ -46,6 +49,9 @@ public class HttpOptionsTest {
       boot.entrySet().forEach(System.out::println);
       readCheckpoint.flag();
     });
+
+
+
 
 
     vertx.fileSystem().readFile("service-invalid.json", asyncConfigRead -> {
