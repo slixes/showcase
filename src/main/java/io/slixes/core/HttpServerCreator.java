@@ -11,7 +11,11 @@ import java.util.UUID;
 
 public interface HttpServerCreator {
 
-  public static Map<String, HttpServer> create(Vertx vertx, JsonObject cfg) {
+  static Map<String, HttpServer> create(Vertx vertx, JsonObject cfg) throws SlixesException {
+    if (cfg.isEmpty() || !cfg.containsKey(SlixesType.HTTP.name().toLowerCase())) {
+      throw new SlixesException("HTTP configuration is not available");
+    }
+
     JsonArray http = cfg.getJsonArray(SlixesType.HTTP.name().toLowerCase());
     Map<String, HttpServer> httpServers = new HashMap<>();
     http.forEach(httpConfig -> {

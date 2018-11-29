@@ -19,9 +19,6 @@ public class ShowcaseServiceIT {
       .requestHandler(req -> req.response().end("Ok"))
       .listen(9800, ar -> {
         // (we can check here if the server started or not)
-
-
-
       });
 
 

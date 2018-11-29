@@ -6,34 +6,38 @@ import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.Router;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 public interface Slixes {
 
-  static Map<String, HttpServer> boot(Vertx vertx, JsonObject config) throws SlixesException {
-    if (config.isEmpty() || !config.containsKey(SlixesType.HTTP.name().toLowerCase())) {
-      throw new SlixesException("HTTP configuration is not available");
-    } else {
-      try {
-        return HttpServerCreator.create(vertx, config);
-      } catch (Exception ex) {
-        throw new SlixesException("HTTP configuration is invalid", ex);
-      }
-    }
+  static void boot(Vertx vertx, Router router, JsonObject config) throws SlixesException {
+    final Map<String, HttpServer> serversMap = HttpServerCreator.create(vertx, config);
+    serversMap.entrySet()
+        .forEach(entry -> entry.getValue().requestHandler(router::accept).listen());
   }
 
-  static void boot(Vertx vertx, JsonObject config,
-      Handler<AsyncResult<Map<String, HttpServer>>> handler) {
-    Future<Map<String, HttpServer>> future = Future.future();
+  static void boot(Vertx vertx, Router router, JsonObject config,
+      Handler<AsyncResult<Void>> handler) {
+    Future<Void> future = Future.future();
     future.setHandler(handler);
-    if (config.isEmpty() || !config.containsKey(SlixesType.HTTP.name().toLowerCase())) {
-      future.fail(new SlixesException("HTTP configuration is not available"));
-    } else {
-      try {
-        future.complete(HttpServerCreator.create(vertx, config));
-      } catch (Exception ex) {
-        future.fail(new SlixesException("HTTP configuration is invalid", ex));
-      }
+    try {
+      final Map<String, HttpServer> stringHttpServerMap = HttpServerCreator.create(vertx, config);
+      CountDownLatch latch = new CountDownLatch(stringHttpServerMap.size());
+      stringHttpServerMap.entrySet()
+          .forEach(entry -> entry.getValue().requestHandler(router::accept).listen(ar -> {
+            if (ar.succeeded()) {
+              latch.countDown();
+              if (latch.getCount() == 0) {
+                future.complete();
+              }
+            } else {
+              future.fail(ar.cause());
+            }
+          }));
+    } catch (SlixesException ex) {
+      future.fail(ex);
     }
   }
 }

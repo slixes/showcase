@@ -1,0 +1,16 @@
+{
+  "http": [
+    {
+      "ssl": true,
+      "keyCertOptions": {
+        "password": "test",
+        "path": "/tmp/test.jks",
+        "value": null
+      },
+      "port": 4883
+    },
+    {
+      "port": 8090
+    }
+  ]
+}
