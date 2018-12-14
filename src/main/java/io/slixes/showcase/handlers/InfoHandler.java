@@ -6,7 +6,6 @@ import io.vertx.ext.web.RoutingContext;
 public interface InfoHandler extends Handler<RoutingContext> {
 
   static Handler<RoutingContext> create() {
-
     return routingContext -> routingContext.response().end("ok");
   }
 }
