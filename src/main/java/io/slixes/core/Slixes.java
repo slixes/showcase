@@ -15,7 +15,17 @@ public interface Slixes {
   static void boot(Vertx vertx, Router router, JsonObject config) throws SlixesException {
     final Map<String, HttpServer> serversMap = HttpServerCreator.create(vertx, config);
     serversMap.entrySet()
-        .forEach(entry -> entry.getValue().requestHandler(router::accept).listen());
+        .forEach(entry -> {
+          System.out.println("I am here");
+          final HttpServer success = entry.getValue().requestHandler(router::accept).listen(ar
+              -> {
+            if (ar.succeeded()) {
+              System.out.println("Success");
+            } else {
+              System.out.println(ar.cause());
+            }
+          });
+        });
   }
 
   static void boot(Vertx vertx, Router router, JsonObject config,
@@ -25,18 +35,24 @@ public interface Slixes {
     try {
       final Map<String, HttpServer> stringHttpServerMap = HttpServerCreator.create(vertx, config);
       CountDownLatch latch = new CountDownLatch(stringHttpServerMap.size());
+      System.out.println("here");
       stringHttpServerMap.entrySet()
-          .forEach(entry -> entry.getValue().requestHandler(router::accept).listen(ar -> {
-            if (ar.succeeded()) {
-              latch.countDown();
-              if (latch.getCount() == 0) {
-                future.complete();
+          .forEach(entry ->
+          {
+            System.out.println("and here");
+            entry.getValue().requestHandler(router::accept).listen(ar -> {
+              if (ar.succeeded()) {
+                latch.countDown();
+                if (latch.getCount() == 0) {
+                  future.complete();
+                }
+              } else {
+                future.fail(ar.cause());
               }
-            } else {
-              future.fail(ar.cause());
-            }
-          }));
+            });
+          });
     } catch (SlixesException ex) {
+      ex.printStackTrace();
       future.fail(ex);
     }
   }

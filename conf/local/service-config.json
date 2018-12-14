@@ -4,10 +4,16 @@
       "ssl": true,
       "keyCertOptions": {
         "password": "test",
-        "path": "/tmp/test.jks",
+        "path": "test.jks",
         "value": null
       },
-      "port": 4883
+      "port": 8443,
+      "host": "127.0.0.1",
+      "keyStoreOptions": {
+        "password": "test",
+        "path": "test.jks",
+        "value": null
+      }
     },
     {
       "port": 8090
