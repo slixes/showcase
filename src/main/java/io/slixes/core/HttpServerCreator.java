@@ -5,19 +5,18 @@ import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 public interface HttpServerCreator {
 
-  static Map<String, HttpServer> create(Vertx vertx, JsonObject cfg) throws SlixesException {
+  static List<HttpServer> create(Vertx vertx, JsonObject cfg) throws SlixesException {
     if (cfg.isEmpty() || !cfg.containsKey(SlixesType.HTTP.name().toLowerCase())) {
       throw new SlixesException("Missing http configuration");
     }
     try {
       JsonArray http = cfg.getJsonArray(SlixesType.HTTP.name().toLowerCase());
-      Map<String, HttpServer> httpServers = new HashMap<>();
+      List<HttpServer> httpServers = new ArrayList<>();
       http.forEach(httpConfig -> {
         JsonObject httpClientOptionsJson = JsonObject.mapFrom(httpConfig);
         final HttpServerOptions serverOptions = new HttpServerOptions(httpClientOptionsJson);
@@ -26,7 +25,6 @@ public interface HttpServerCreator {
           if (httpServer == null) {
             System.out.println("I found the fucker ");
           }
-          httpServers.put(UUID.randomUUID().toString(), httpServer);
         } catch (Exception ex) {
           ex.printStackTrace();
         }
@@ -34,8 +32,7 @@ public interface HttpServerCreator {
       });
       return httpServers;
     } catch (Exception ex) {
-      ex.printStackTrace();
-      throw new SlixesException("Yo this sucks", ex);
+      throw new SlixesException("Invalid configuration", ex);
     }
   }
 }

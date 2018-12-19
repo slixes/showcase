@@ -7,21 +7,29 @@ import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
-import java.util.Map;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
 
 public interface Slixes {
 
-  static void boot(Vertx vertx, Router router, JsonObject config) throws SlixesException {
-    final Map<String, HttpServer> serversMap = HttpServerCreator.create(vertx, config);
-    serversMap
-        .entrySet().forEach(entry -> entry.getValue().requestHandler(router)
-        .listen(ar -> {
-          if (ar.succeeded()) {
-          } else {
-            System.out.println("Something got messed up here");
-          }
-        }));
+  static JsonObject boot(Vertx vertx, Router router, JsonObject config)
+      throws SlixesException {
+    AtomicReference<JsonObject> result = new AtomicReference<>();
+    final List<HttpServer> serverList = HttpServerCreator.create(vertx, config);
+    serverList.forEach(entry -> entry.requestHandler(router).listen(ar -> {
+      if (ar.succeeded()) {
+        result.set(new JsonObject().put("result", true));
+      }
+      if (ar.failed()) {
+        JsonObject errorJson = new JsonObject()
+            .put("result", false)
+            .put("error", new JsonObject()
+                .put("message", ar.cause().getMessage()));
+        result.set(errorJson);
+      }
+    }));
+    return result.get();
   }
 
   static void boot(Vertx vertx, Router router, JsonObject config,
@@ -29,21 +37,18 @@ public interface Slixes {
     Future<Void> future = Future.future();
     future.setHandler(handler);
     try {
-      final Map<String, HttpServer> stringHttpServerMap = HttpServerCreator.create(vertx, config);
+      final List<HttpServer> stringHttpServerMap = HttpServerCreator.create(vertx, config);
       final CountDownLatch latch = new CountDownLatch(stringHttpServerMap.size());
-      stringHttpServerMap.entrySet()
-          .forEach(entry -> {
-            entry.getValue().requestHandler(router).listen(ar -> {
-              if (ar.succeeded()) {
-                latch.countDown();
-                if (latch.getCount() == 0) {
-                  future.complete();
-                }
-              } else {
-                future.fail(ar.cause());
-              }
-            });
-          });
+      stringHttpServerMap.forEach(entry -> entry.requestHandler(router).listen(ar -> {
+        if (ar.succeeded()) {
+          latch.countDown();
+          if (latch.getCount() == 0) {
+            future.complete();
+          }
+        } else {
+          future.fail(ar.cause());
+        }
+      }));
     } catch (SlixesException ex) {
       ex.printStackTrace();
       future.fail(ex);

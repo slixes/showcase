@@ -3,9 +3,6 @@ package io.slixes.core.test;
 import io.slixes.core.Slixes;
 import io.slixes.core.SlixesException;
 import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpServerOptions;
-import io.vertx.core.json.Json;
-import io.vertx.core.net.JksOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.junit5.Checkpoint;
 import io.vertx.junit5.VertxExtension;
@@ -13,14 +10,9 @@ import io.vertx.junit5.VertxTestContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @ExtendWith(VertxExtension.class)
 public class HttpOptionsTest {
-
-  static final Logger LOG = LoggerFactory.getLogger(HttpOptionsTest.class);
-
 
   @Test
   public void testSlixesLoading() {
@@ -42,7 +34,7 @@ public class HttpOptionsTest {
 
     vertx.fileSystem().readFile("service-invalid.json", asyncConfigRead -> {
       Assertions.assertTrue(asyncConfigRead.succeeded());
-      Assertions.assertThrows(ClassCastException.class,
+      Assertions.assertThrows(SlixesException.class,
           () -> Slixes.boot(vertx, router, asyncConfigRead.result().toJsonObject()));
       readCheckpoint.flag();
     });
@@ -62,20 +54,6 @@ public class HttpOptionsTest {
     });
 
     Assertions.assertFalse(testContext.failed());
-  }
-
-
-  @Test
-  public void testHttpOptionsSerialization() {
-
-    final HttpServerOptions serverOptions = new HttpServerOptions()
-        .setPort(8443)
-        .setSsl(true)
-        .setKeyStoreOptions(new JksOptions().setPath("test.jks").setPassword("test"));
-
-    System.out.println(Json.encode(serverOptions));
-
-
   }
 }
 
