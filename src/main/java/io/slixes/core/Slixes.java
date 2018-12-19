@@ -28,30 +28,18 @@ public interface Slixes {
       Handler<AsyncResult<Void>> handler) {
     Future<Void> future = Future.future();
     future.setHandler(handler);
-    System.out.println("1");
     try {
       final Map<String, HttpServer> stringHttpServerMap = HttpServerCreator.create(vertx, config);
-      System.out.println("2");
       final CountDownLatch latch = new CountDownLatch(stringHttpServerMap.size());
-
-      System.out.println("latch contains: " + latch.getCount());
-      System.out.println("3");
       stringHttpServerMap.entrySet()
           .forEach(entry -> {
-            System.out.println(entry.getKey());
             entry.getValue().requestHandler(router).listen(ar -> {
-              System.out.println(ar.result());
-              System.out.println("Speaking from the future");
               if (ar.succeeded()) {
-                System.out.println("succeeded");
                 latch.countDown();
-                System.out.println("latch is now: " + latch.getCount());
                 if (latch.getCount() == 0) {
-                  System.out.println("done");
                   future.complete();
                 }
               } else {
-                System.out.println("failed");
                 future.fail(ar.cause());
               }
             });
