@@ -1,6 +1,5 @@
 package io.slixes.core.test;
 
-import io.slixes.core.HttpServerOptionsMixin;
 import io.slixes.core.Slixes;
 import io.slixes.core.SlixesException;
 import io.vertx.core.Vertx;
@@ -14,9 +13,13 @@ import io.vertx.junit5.VertxTestContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ExtendWith(VertxExtension.class)
 public class HttpOptionsTest {
+
+  static final Logger LOG = LoggerFactory.getLogger(HttpOptionsTest.class);
 
 
   @Test
@@ -58,29 +61,20 @@ public class HttpOptionsTest {
       readCheckpoint.flag();
     });
 
-//    Assertions.assertTrue(testContext.awaitCompletion(1, TimeUnit.SECONDS));
     Assertions.assertFalse(testContext.failed());
   }
 
+
   @Test
-  public void playWithHttpOptionsTest() {
-    HttpServerOptions httpsOptions = new HttpServerOptions();
-    httpsOptions.setHost("127.0.0.1");
-    httpsOptions.setPort(8080);
-    httpsOptions.setSsl(true);
-    final JksOptions jksOptions = new JksOptions().setPath("test.jks").setPassword("test");
-    httpsOptions.setKeyStoreOptions(jksOptions);
+  public void testHttpOptionsSerialization() {
 
-    final String encodedHttpOptions = Json.encode(httpsOptions);
+    final HttpServerOptions serverOptions = new HttpServerOptions()
+        .setPort(8443)
+        .setSsl(true)
+        .setKeyStoreOptions(new JksOptions().setPath("test.jks").setPassword("test"));
 
-    Json.mapper.addMixIn(HttpServerOptions.class, HttpServerOptionsMixin.class);
+    System.out.println(Json.encode(serverOptions));
 
-    System.out.println(Json.encode(encodedHttpOptions));
-
-//    HttpServerOptions decodedOptions = Json
-//        .decodeValue(encodedHttpOptions, HttpServerOptions.class);
-//
-//    Assertions.assertEquals(httpsOptions, decodedOptions);
 
   }
 }

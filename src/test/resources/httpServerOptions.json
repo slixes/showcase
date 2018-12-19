@@ -1,0 +1,8 @@
+{
+  "port": 8443,
+  "ssl": true,
+  "keyStoreOptions": {
+    "password": "test",
+    "path": "test.jks"
+  }
+}
