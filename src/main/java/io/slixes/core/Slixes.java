@@ -38,19 +38,22 @@ public interface Slixes {
     future.setHandler(handler);
     try {
       final List<HttpServer> stringHttpServerMap = HttpServerCreator.create(vertx, config);
-      final CountDownLatch latch = new CountDownLatch(stringHttpServerMap.size());
-      stringHttpServerMap.forEach(entry -> entry.requestHandler(router).listen(ar -> {
-        if (ar.succeeded()) {
-          latch.countDown();
-          if (latch.getCount() == 0) {
-            future.complete();
+      if (!stringHttpServerMap.isEmpty()) {
+        final CountDownLatch latch = new CountDownLatch(stringHttpServerMap.size());
+        stringHttpServerMap.forEach(entry -> entry.requestHandler(router).listen(ar -> {
+          if (ar.succeeded()) {
+            latch.countDown();
+            if (latch.getCount() == 0) {
+              future.complete();
+            }
+          } else {
+            future.fail(ar.cause());
           }
-        } else {
-          future.fail(ar.cause());
-        }
-      }));
+        }));
+      } else {
+        future.fail("Nothing to boot");
+      }
     } catch (SlixesException ex) {
-      ex.printStackTrace();
       future.fail(ex);
     }
   }

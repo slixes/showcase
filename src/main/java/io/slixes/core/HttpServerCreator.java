@@ -21,14 +21,10 @@ public interface HttpServerCreator {
         JsonObject httpClientOptionsJson = JsonObject.mapFrom(httpConfig);
         final HttpServerOptions serverOptions = new HttpServerOptions(httpClientOptionsJson);
         try {
-          final HttpServer httpServer = vertx.createHttpServer(serverOptions);
-          if (httpServer == null) {
-            System.out.println("I found the fucker ");
-          }
+          httpServers.add(vertx.createHttpServer(serverOptions));
         } catch (Exception ex) {
           ex.printStackTrace();
         }
-
       });
       return httpServers;
     } catch (Exception ex) {
