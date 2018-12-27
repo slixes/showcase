@@ -23,13 +23,19 @@ public class ShowcaseService extends AbstractVerticle {
     final OAuth2Auth oauth2 = KeycloakAuth.create(vertx, OAuth2FlowType.PASSWORD, keycloakJson);
 
     Router router = Router.router(vertx);
-    router.route().handler(BodyHandler.create());
     router.route().handler(LoggerHandler.create());
+    router.route().handler(BodyHandler.create());
 
     router.route("/ping").handler(routingContext -> routingContext.response().end("Alive!"));
     router.route("/info").handler(InfoHandler.create());
     router.post("/login").handler(LoginHandler.create(oauth2));
     router.route("/logout").handler(LogoutHandler.create());
+
+
+
+    Router managementRouter = Router.router(vertx);
+
+
 
     Slixes.boot(vertx, router, config(), ar -> {
       if (ar.succeeded()) {

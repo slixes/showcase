@@ -17,7 +17,7 @@ public interface LoginHandler extends Handler<RoutingContext> {
           routingContext.response().setStatusCode(HttpResponseStatus.UNAUTHORIZED.code()).end();
         } else {
           final User user = res.result();
-          routingContext.response().end(user.principal().encode());
+          routingContext.response().end(user.principal().encodePrettily());
         }
       });
     };
