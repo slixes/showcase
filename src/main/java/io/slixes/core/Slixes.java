@@ -37,6 +37,7 @@ public interface Slixes {
     Future<Void> future = Future.future();
     future.setHandler(handler);
     try {
+
       final List<HttpServer> stringHttpServerMap = HttpServerCreator.create(vertx, config);
       if (!stringHttpServerMap.isEmpty()) {
         final CountDownLatch latch = new CountDownLatch(stringHttpServerMap.size());

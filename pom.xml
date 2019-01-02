@@ -45,7 +45,7 @@
     <!-- Dependencies -->
     <vertx.version>3.6.2</vertx.version>
     <slf4j.version>1.7.25</slf4j.version>
-    <swagger.version>2.0.6</swagger.version>
+    <swagger.version>2.0.5</swagger.version>
     <junit.version>5.3.1</junit.version>
     <!-- Plugins -->
     <vertx.maven.plugin.version>1.0.18</vertx.maven.plugin.version>
@@ -106,6 +106,10 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-auth-oauth2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-config</artifactId>
     </dependency>
     <dependency>
       <groupId>io.swagger.core.v3</groupId>
