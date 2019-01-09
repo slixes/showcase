@@ -14,7 +14,7 @@
   <artifactId>showcase</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
-  <name>Slixes - Showcase</name>
+  <name>Slixes::Showcase</name>
 
   <developers>
     <developer>
@@ -47,6 +47,7 @@
     <slf4j.version>1.7.25</slf4j.version>
     <swagger.version>2.0.5</swagger.version>
     <junit.version>5.3.1</junit.version>
+    <log4j.version>2.11.1</log4j.version>
     <!-- Plugins -->
     <vertx.maven.plugin.version>1.0.18</vertx.maven.plugin.version>
     <vertx.verticle>io.slixes.showcase.ShowcaseService</vertx.verticle>
@@ -82,6 +83,13 @@
         <version>${junit.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-bom</artifactId>
+        <version>${log4j.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+      <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
         <version>${slf4j.version}</version>
@@ -91,6 +99,7 @@
         <artifactId>slf4j-simple</artifactId>
         <version>${slf4j.version}</version>
       </dependency>
+
     </dependencies>
   </dependencyManagement>
 
@@ -142,7 +151,16 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+    </dependency>
   </dependencies>
+
 
   <build>
     <pluginManagement>

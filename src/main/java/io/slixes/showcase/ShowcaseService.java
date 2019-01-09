@@ -14,31 +14,33 @@ import io.vertx.ext.auth.oauth2.providers.KeycloakAuth;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.LoggerHandler;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Properties;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 public class ShowcaseService extends AbstractVerticle {
 
+  private static final Logger LOGGER = LogManager.getLogger(ShowcaseService.class.getName());
+
+
   @Override
   public void start(Future<Void> startFuture) {
+    Properties props = System.getProperties();
+//    props.setProperty("gate.home", "http://gate.ac.uk/wiki/code-repository");
 
-    ConfigRetriever retriever = ConfigRetriever.create(vertx);
-
-    Router router = Router.router(vertx);
-    AtomicReference<JsonObject> config = new AtomicReference<>();
-
+    final ConfigRetriever retriever = ConfigRetriever.create(vertx);
+    final Router router = Router.router(vertx);
     retriever.getConfig(configHandler -> {
       if (configHandler.succeeded()) {
-        config.set(configHandler.result());
-        Slixes.boot(vertx, router, config.get(), ar -> {
+        final JsonObject config = configHandler.result();
+        Slixes.boot(vertx, router, config, ar -> {
           if (ar.succeeded()) {
-            final JsonObject keycloakJson = config.get().getJsonObject("auth")
-                .getJsonObject("keycloak");
+            final JsonObject keycloakJson = config.getJsonObject("auth").getJsonObject("keycloak");
             final OAuth2Auth oauth2 = KeycloakAuth
                 .create(vertx, OAuth2FlowType.PASSWORD, keycloakJson);
-
             router.route().handler(LoggerHandler.create());
             router.route().handler(BodyHandler.create());
-
             router.route("/ping")
                 .handler(routingContext -> routingContext.response().end("Alive!"));
             router.route("/info").handler(InfoHandler.create());
@@ -55,16 +57,5 @@ public class ShowcaseService extends AbstractVerticle {
         startFuture.fail(configHandler.cause());
       }
     });
-
-    retriever.listen(configChangeHandler -> {
-      final JsonObject newConfiguration = configChangeHandler.getNewConfiguration();
-
-      System.out.println("I have changed");
-
-    });
-
-
-
-
   }
 }
