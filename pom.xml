@@ -89,17 +89,6 @@
         <scope>import</scope>
         <type>pom</type>
       </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${slf4j.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>${slf4j.version}</version>
-      </dependency>
-
     </dependencies>
   </dependencyManagement>
 
@@ -129,14 +118,6 @@
       <artifactId>swagger-annotations</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-    </dependency>
-    <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-junit5</artifactId>
       <scope>test</scope>
@@ -150,10 +131,6 @@
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

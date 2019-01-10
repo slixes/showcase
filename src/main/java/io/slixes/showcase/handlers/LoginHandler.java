@@ -3,15 +3,15 @@ package io.slixes.showcase.handlers;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.auth.User;
 import io.vertx.ext.auth.oauth2.OAuth2Auth;
 import io.vertx.ext.web.RoutingContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public interface LoginHandler extends Handler<RoutingContext> {
 
-  Logger LOG = LogManager.getLogger(LoginHandler.class.getName());
+  Logger logger = LoggerFactory.getLogger(LoginHandler.class);
 
 
   static Handler<RoutingContext> create(OAuth2Auth oauth2) {
@@ -21,9 +21,9 @@ public interface LoginHandler extends Handler<RoutingContext> {
 
       userJson.put("meta", someOtherObject);
 
-      LOG.info("--------------------------");
-      LOG.info(userJson);
-      LOG.info("--------------------------");
+      logger.info("--------------------------");
+      logger.info(userJson);
+      logger.info("--------------------------");
 
       oauth2.authenticate(userJson, res -> {
         if (res.failed()) {

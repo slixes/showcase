@@ -1,7 +1,7 @@
 package io.slixes.showcase;
 
 import io.slixes.core.Slixes;
-import io.slixes.showcase.handlers.InfoHandler;
+import io.slixes.showcase.handlers.PingHandler;
 import io.slixes.showcase.handlers.LoginHandler;
 import io.slixes.showcase.handlers.LogoutHandler;
 import io.vertx.config.ConfigRetriever;
@@ -14,21 +14,17 @@ import io.vertx.ext.auth.oauth2.providers.KeycloakAuth;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.LoggerHandler;
-import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 public class ShowcaseService extends AbstractVerticle {
-
-  private static final Logger LOGGER = LogManager.getLogger(ShowcaseService.class.getName());
-
 
   @Override
   public void start(Future<Void> startFuture) {
-    Properties props = System.getProperties();
-//    props.setProperty("gate.home", "http://gate.ac.uk/wiki/code-repository");
+    Logger logger = LogManager.getLogger();
+    logger.debug("Debug message");
 
+    logger.info("yo");
     final ConfigRetriever retriever = ConfigRetriever.create(vertx);
     final Router router = Router.router(vertx);
     retriever.getConfig(configHandler -> {
@@ -41,9 +37,7 @@ public class ShowcaseService extends AbstractVerticle {
                 .create(vertx, OAuth2FlowType.PASSWORD, keycloakJson);
             router.route().handler(LoggerHandler.create());
             router.route().handler(BodyHandler.create());
-            router.route("/ping")
-                .handler(routingContext -> routingContext.response().end("Alive!"));
-            router.route("/info").handler(InfoHandler.create());
+            router.route("/ping").handler(PingHandler.create());
             router.post("/login").handler(LoginHandler.create(oauth2));
             router.route("/logout").handler(LogoutHandler.create());
             startFuture.complete();
