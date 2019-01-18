@@ -3,9 +3,9 @@
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <!--<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>-->
-      <JsonLayout complete="true" compact="false">
-        <KeyValuePair key="myCustomField" value="myCustomValue" />
-      </JsonLayout>
+      <!--<JsonLayout complete="true" compact="false">-->
+        <!--<KeyValuePair key="myCustomField" value="myCustomValue" />-->
+      <!--</JsonLayout>-->
     </Console>
   </Appenders>
   <Loggers>

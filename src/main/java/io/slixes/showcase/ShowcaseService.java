@@ -1,9 +1,9 @@
 package io.slixes.showcase;
 
 import io.slixes.core.Slixes;
-import io.slixes.showcase.handlers.PingHandler;
 import io.slixes.showcase.handlers.LoginHandler;
 import io.slixes.showcase.handlers.LogoutHandler;
+import io.slixes.showcase.handlers.PingHandler;
 import io.vertx.config.ConfigRetriever;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
@@ -14,17 +14,17 @@ import io.vertx.ext.auth.oauth2.providers.KeycloakAuth;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.LoggerHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ShowcaseService extends AbstractVerticle {
 
   @Override
   public void start(Future<Void> startFuture) {
-    Logger logger = LogManager.getLogger();
-    logger.debug("Debug message");
 
-    logger.info("yo");
+    System.out.println("HELLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+//    Logger logger = LogManager.getLogger();
+//    logger.debug("Debug message");
+//
+//    logger.info("yo");
     final ConfigRetriever retriever = ConfigRetriever.create(vertx);
     final Router router = Router.router(vertx);
     retriever.getConfig(configHandler -> {
@@ -51,5 +51,13 @@ public class ShowcaseService extends AbstractVerticle {
         startFuture.fail(configHandler.cause());
       }
     });
+  }
+
+
+  @Override
+
+  public void stop(Future<Void> stopFuture) {
+    System.out.println("Shut down hook invoked");
+    stopFuture.tryComplete();
   }
 }

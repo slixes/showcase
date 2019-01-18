@@ -51,6 +51,7 @@
     <!-- Plugins -->
     <vertx.maven.plugin.version>1.0.18</vertx.maven.plugin.version>
     <vertx.verticle>io.slixes.showcase.ShowcaseService</vertx.verticle>
+    <vertx.launcher>io.slixes.core.SlixesLauncher</vertx.launcher>
   </properties>
 
   <dependencyManagement>
