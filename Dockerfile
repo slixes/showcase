@@ -18,12 +18,12 @@ ENV PATH $VERTX_HOME/bin:$PATH
 #
 #
 ## Deploy verticle jar and configuration
-#RUN mkdir -p /usr/verticles
-#COPY target/showcase-0.0.1-SNAPSHOT.jar /usr/verticles/
-#COPY conf/local/service-config.json /usr/verticles/service-config.json
-#
-#RUN chmod -R 777 /usr/verticles
-#RUN chmod -R 777 /usr/verticles/*
-#
-#CMD ["vertx","run","io.slixes.showcase.ShowcaseService","-cp","/usr/verticles/showcase-0.0.1-SNAPSHOT.jar","--conf","/usr/verticles/service-config.json"]
-#
+RUN mkdir -p /usr/verticles
+COPY target/showcase-0.0.1-SNAPSHOT.jar /usr/verticles/
+COPY conf/local/service-config.json /usr/verticles/service-config.json
+COPY test.jks /usr/verticles
+
+RUN chmod -R 777 /usr/verticles
+RUN chmod -R 777 /usr/verticles/*
+
+CMD ["vertx","run","io.slixes.showcase.ShowcaseService","-cp","/usr/verticles/showcase-0.0.1-SNAPSHOT.jar","--conf","/usr/verticles/service-config.json","--launcher-class=io.slixes.core.SlixesLauncher"]

@@ -36,26 +36,27 @@ public interface Slixes {
       Handler<AsyncResult<Void>> handler) {
     Future<Void> future = Future.future();
     future.setHandler(handler);
+    final List<HttpServer> stringHttpServerMap;
     try {
-
-      final List<HttpServer> stringHttpServerMap = HttpServerCreator.create(vertx, config);
+      stringHttpServerMap = HttpServerCreator.create(vertx, config);
       if (!stringHttpServerMap.isEmpty()) {
         final CountDownLatch latch = new CountDownLatch(stringHttpServerMap.size());
-        stringHttpServerMap.forEach(entry -> entry.requestHandler(router).listen(ar -> {
-          if (ar.succeeded()) {
-            latch.countDown();
-            if (latch.getCount() == 0) {
-              future.complete();
-            }
-          } else {
-            future.fail(ar.cause());
-          }
-        }));
+        stringHttpServerMap.forEach(entry ->
+            entry.requestHandler(router).listen(ar -> {
+              if (ar.succeeded()) {
+                latch.countDown();
+                if (latch.getCount() == 0) {
+                  future.complete();
+                }
+              } else {
+                future.fail(ar.cause());
+              }
+            }));
       } else {
         future.fail("Nothing to boot");
       }
-    } catch (SlixesException ex) {
-      future.fail(ex);
+    } catch (SlixesException e) {
+      e.printStackTrace();
     }
   }
 }
