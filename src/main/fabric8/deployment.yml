@@ -1,0 +1,31 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ${project.artifactId}
+spec:
+  template:
+    metadata:
+      labels:
+        name: ${project.artifactId}
+    spec:
+      containers:
+        - image: ${project.groupId}/${project.artifactId}:${project.version}
+          imagePullPolicy: IfNotPresent
+          name: ${project.artifactId}
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: 8080
+            periodSeconds: 15
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 2
+          volumeMounts:
+            - name: ${project.artifactId}-service-config
+              mountPath: /usr/verticles/${project.artifactId}
+      volumes:
+        - name: ${project.artifactId}-service-config
+          secret:
+            secretName: ${project.artifactId}-service-config-secret
+      restartPolicy: Always
+

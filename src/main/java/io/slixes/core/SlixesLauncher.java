@@ -1,8 +1,8 @@
 package io.slixes.core;
 
-import io.vertx.core.Launcher;
-import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
+    import io.vertx.core.Launcher;
+    import io.vertx.core.Vertx;
+    import io.vertx.core.VertxOptions;
 
 public class SlixesLauncher extends Launcher {
 

@@ -24,7 +24,7 @@ public class ShowcaseService extends AbstractVerticle {
 //    Logger logger = LogManager.getLogger();
 //    logger.debug("Debug message");
 //
-//    logger.info("yo");
+//    logger.info     ("yo");
     final ConfigRetriever retriever = ConfigRetriever.create(vertx);
     final Router router = Router.router(vertx);
     retriever.getConfig(configHandler -> {
