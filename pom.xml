@@ -51,8 +51,13 @@
     <!-- Plugins -->
     <vertx.maven.plugin.version>1.0.18</vertx.maven.plugin.version>
     <fabric8.maven.plugin.version>3.5.41</fabric8.maven.plugin.version>
+    <!-- Service Settings -->
     <vertx.verticle>io.slixes.showcase.ShowcaseService</vertx.verticle>
     <vertx.launcher>io.slixes.core.SlixesLauncher</vertx.launcher>
+    <!-- Docker Settings -->
+    <docker.http.port>8090</docker.http.port>
+    <docker.https.port>8443</docker.https.port>
+    <!-- Minikube Settings -->
   </properties>
 
   <dependencyManagement>
@@ -144,7 +149,6 @@
     </dependency>
   </dependencies>
 
-
   <build>
     <pluginManagement>
       <plugins>
@@ -197,12 +201,13 @@
             <image>
               <name>${project.groupId}/${project.artifactId}:${project.version}</name>
               <build>
-                <from>vertx/vertx3-alpine</from>
+                <from>adoptopenjdk/openjdk11:alpine</from>
                 <tags>
                   <tag>${project.version}</tag>
                 </tags>
                 <ports>
-                  <port>8080</port>
+                  <port>${docker.http.port}</port>
+                  <port>${docker.https.port}</port>
                 </ports>
                 <cmd>
                   <exec>
@@ -210,16 +215,32 @@
                     <arg>run</arg>
                     <arg>${vertx.verticle}</arg>
                     <arg>-cp</arg>
-                    <arg>/usr/verticles/${project.artifactId}-${project.version}.jar</arg>
+                    <arg>
+                      /usr/verticles/${project.artifactId}/${project.groupId}-${project.version}.jar
+                    </arg>
                     <arg>-ha</arg>
                     <arg>--conf</arg>
-                    <arg>/usr/verticles/${project.artifactId}/config.json</arg>
+                    <arg>/usr/verticles/${project.artifactId}/service-config.json</arg>
+                    <arg>--launcher-class=${vertx.launcher}</arg>
                   </exec>
                 </cmd>
                 <runCmds>
+                  <runcmd>apk add --update bash wget tar &amp;&amp; rm -rf /var/cache/apk/*</runcmd>
+                  <runcmd>wget -P /var/cache/vertx/
+                    https://bintray.com/artifact/download/vertx/downloads/vert.x-${vertx.version}.tar.gz
+                  </runcmd>
+                  <runcmd>mkdir -p /usr/local</runcmd>
+                  <runcmd>tar xvzf /var/cache/vertx/vert.x-${vertx.version}.tar.gz -C /usr/local
+                  </runcmd>
+                  <runcmd>chmod +x /usr/local/vertx/bin/vertx</runcmd>
                   <runcmd>chmod -R 777 /usr/verticles</runcmd>
                   <runcmd>chmod -R 777 /usr/verticles/*</runcmd>
                 </runCmds>
+
+                <env>
+                  <VERTX_HOME>/usr/local/vertx</VERTX_HOME>
+                  <PATH>$VERTX_HOME/bin:$PATH</PATH>
+                </env>
                 <assembly>
                   <basedir>/</basedir>
                   <inline>
@@ -228,7 +249,14 @@
                         <source>
                           ${project.build.directory}/${project.artifactId}-${project.version}.jar
                         </source>
-                        <outputDirectory>/usr/verticles/</outputDirectory>
+                        <outputDirectory>/usr/verticles/${project.artifactId}</outputDirectory>
+                        <fileMode>0755</fileMode>
+                      </file>
+                      <file>
+                        <source>
+                          ${project.basedir}/test.jks
+                        </source>
+                        <outputDirectory>/usr/verticles/${project.artifactId}</outputDirectory>
                         <fileMode>0755</fileMode>
                       </file>
                     </files>

@@ -26,4 +26,4 @@ COPY test.jks /usr/verticles
 RUN chmod -R 777 /usr/verticles
 RUN chmod -R 777 /usr/verticles/*
 
-CMD ["vertx","run","io.slixes.showcase.ShowcaseService","-cp","/usr/verticles/showcase-0.0.1-SNAPSHOT.jar","--conf","/usr/verticles/service-config.json","--launcher-class=io.slixes.core.SlixesLauncher"]
+CMD ["vertx","run","io.slixes.showcase.ShowcaseService","-cp","/usr/verticles/showcase-0.0.1-SNAPSHOT.jar","--conf","/usr/verticles/service-config.json","--launcher-class=io.slixes.core.SlixesLauncher" ,"-ha"]
