@@ -216,7 +216,7 @@
                     <arg>${vertx.verticle}</arg>
                     <arg>-cp</arg>
                     <arg>
-                      /usr/verticles/${project.artifactId}/${project.groupId}-${project.version}.jar
+                      /usr/verticles/${project.artifactId}/${project.artifactId}-${project.version}.jar
                     </arg>
                     <arg>-ha</arg>
                     <arg>--conf</arg>
@@ -226,7 +226,7 @@
                 </cmd>
                 <runCmds>
                   <runcmd>apk add --update bash wget tar &amp;&amp; rm -rf /var/cache/apk/*</runcmd>
-                  <runcmd>wget -P /var/cache/vertx/
+                  <runcmd>wget -P /var/cache/vertx/ \
                     https://bintray.com/artifact/download/vertx/downloads/vert.x-${vertx.version}.tar.gz
                   </runcmd>
                   <runcmd>mkdir -p /usr/local</runcmd>
@@ -235,11 +235,10 @@
                   <runcmd>chmod +x /usr/local/vertx/bin/vertx</runcmd>
                   <runcmd>chmod -R 777 /usr/verticles</runcmd>
                   <runcmd>chmod -R 777 /usr/verticles/*</runcmd>
+                  <runcmd>ln -s $VERTX_HOME/bin/vertx /usr/local/bin/</runcmd>
                 </runCmds>
-
                 <env>
                   <VERTX_HOME>/usr/local/vertx</VERTX_HOME>
-                  <PATH>$VERTX_HOME/bin:$PATH</PATH>
                 </env>
                 <assembly>
                   <basedir>/</basedir>
