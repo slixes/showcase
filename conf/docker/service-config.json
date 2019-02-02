@@ -5,7 +5,7 @@
       "ssl": true,
       "keyStoreOptions": {
         "password": "testpassword",
-        "path": "test.jks"
+        "path": "/usr/verticles/showcase/test.jks"
       }
     },
     {
