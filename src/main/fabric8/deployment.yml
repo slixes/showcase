@@ -15,7 +15,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /ping
-              port: 8080
+              port: 8090
             periodSeconds: 15
             timeoutSeconds: 5
             successThreshold: 1
