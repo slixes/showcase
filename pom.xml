@@ -220,7 +220,7 @@
                     </arg>
                     <arg>-ha</arg>
                     <arg>--conf</arg>
-                    <arg>/usr/verticles/${project.artifactId}/service-config.json</arg>
+                    <arg>/usr/verticles/${project.artifactId}/conf/service-config.json</arg>
                     <arg>--launcher-class=${vertx.launcher}</arg>
                   </exec>
                 </cmd>
