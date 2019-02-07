@@ -7,9 +7,6 @@
         "password": "testpassword",
         "path": "/usr/verticles/showcase/test.jks"
       }
-    },
-    {
-      "port": 8090
     }
   ],
   "auth": {
