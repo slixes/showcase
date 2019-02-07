@@ -15,14 +15,15 @@ spec:
           readinessProbe:
             httpGet:
               path: /ping
-              port: 8080
+              port: ${docker.http.port}
+              scheme: HTTPS
             periodSeconds: 15
             timeoutSeconds: 5
             successThreshold: 1
             failureThreshold: 2
           volumeMounts:
             - name: ${project.artifactId}-service-config
-              mountPath: /usr/verticles/${project.artifactId}
+              mountPath: /usr/verticles/${project.artifactId}/conf
       volumes:
         - name: ${project.artifactId}-service-config
           secret:

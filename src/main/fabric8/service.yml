@@ -8,7 +8,7 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: 8080
-      nodePort: 30880
+    - port: ${docker.http.port}
+      nodePort: ${kubernetes.http.port}
   selector:
     name: ${project.artifactId}
