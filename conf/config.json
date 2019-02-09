@@ -5,8 +5,11 @@
       "ssl": true,
       "keyStoreOptions": {
         "password": "testpassword",
-        "path": "/usr/verticles/showcase/test.jks"
+        "path": "test.jks"
       }
+    },
+    {
+      "port": 8100
     }
   ],
   "auth": {

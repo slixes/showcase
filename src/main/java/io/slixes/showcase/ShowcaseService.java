@@ -39,16 +39,12 @@ public class ShowcaseService extends AbstractVerticle {
           vertx.close();
         }
       });
-    } catch (
-      Exception ex) {
+    } catch (Exception ex) {
       ex.printStackTrace();
     }
-
   }
 
-
   @Override
-
   public void stop(Future<Void> stopFuture) {
     System.out.println("Shut down hook invoked");
     stopFuture.tryComplete();
