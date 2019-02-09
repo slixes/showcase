@@ -18,32 +18,25 @@ public class ShowcaseService extends AbstractVerticle {
 
     try {
 
-      final ConfigRetriever retriever = ConfigRetriever.create(vertx);
       final Router router = Router.router(vertx);
-      retriever.getConfig(configHandler -> {
-        if (configHandler.succeeded()) {
-          final JsonObject config = configHandler.result();
-          Slixes.boot(vertx, router, config, ar -> {
 
-            if (ar.succeeded()) {
+      Slixes.boot(vertx, router, ar -> {
+
+        if (ar.succeeded()) {
 //              final JsonObject keycloakJson = config.getJsonObject("auth")
 //                  .getJsonObject("keycloak");
 //              final OAuth2Auth oauth2 = KeycloakAuth
 //                  .create(vertx, OAuth2FlowType.PASSWORD, keycloakJson);
-              router.route().handler(LoggerHandler.create());
-              router.route().handler(BodyHandler.create());
-              router.route("/ping").handler(PingHandler.create());
+          router.route().handler(LoggerHandler.create());
+          router.route().handler(BodyHandler.create());
+          router.route("/ping").handler(PingHandler.create());
 //              router.post("/login").handler(LoginHandler.create(oauth2));
-              router.route("/logout").handler(LogoutHandler.create());
-              startFuture.complete();
-            } else {
-              System.err.println("Error booting service [{}]" + startFuture.cause().getMessage());
-              startFuture.fail(ar.cause());
-              vertx.close();
-            }
-          });
+          router.route("/logout").handler(LogoutHandler.create());
+          startFuture.complete();
         } else {
-          startFuture.fail(configHandler.cause());
+          System.err.println("Error booting service [{}]" + startFuture.cause().getMessage());
+          startFuture.fail(ar.cause());
+          vertx.close();
         }
       });
     } catch (Exception ex) {
@@ -51,9 +44,7 @@ public class ShowcaseService extends AbstractVerticle {
     }
   }
 
-
   @Override
-
   public void stop(Future<Void> stopFuture) {
     System.out.println("Shut down hook invoked");
     stopFuture.tryComplete();
