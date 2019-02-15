@@ -1,6 +1,7 @@
 package io.slixes.showcase;
 
 import io.slixes.core.Slixes;
+import io.slixes.showcase.handlers.ChainedHandler;
 import io.slixes.showcase.handlers.LogoutHandler;
 import io.slixes.showcase.handlers.PingHandler;
 import io.vertx.config.ConfigRetriever;
@@ -20,7 +21,7 @@ public class ShowcaseService extends AbstractVerticle {
 
       final Router router = Router.router(vertx);
 
-      Slixes.boot(vertx, router, ar -> {
+      Slixes.boot(router, ar -> {
 
         if (ar.succeeded()) {
 //              final JsonObject keycloakJson = config.getJsonObject("auth")
@@ -32,6 +33,8 @@ public class ShowcaseService extends AbstractVerticle {
           router.route("/ping").handler(PingHandler.create());
 //              router.post("/login").handler(LoginHandler.create(oauth2));
           router.route("/logout").handler(LogoutHandler.create());
+
+          router.route("/chain").handler(ChainedHandler.create());
           startFuture.complete();
         } else {
           System.err.println("Error booting service [{}]" + startFuture.cause().getMessage());
