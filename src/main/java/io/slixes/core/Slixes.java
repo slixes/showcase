@@ -1,8 +1,6 @@
 package io.slixes.core;
 
 import io.vertx.config.ConfigRetriever;
-import io.vertx.config.ConfigRetrieverOptions;
-import io.vertx.config.ConfigStoreOptions;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -17,8 +15,9 @@ import java.util.concurrent.CountDownLatch;
 public interface Slixes {
 
 
+  static void boot(Router router, Handler<AsyncResult<Void>> handler) {
 
-  static void boot(Vertx vertx, Router router, Handler<AsyncResult<Void>> handler) {
+    final Vertx vertx = Vertx.currentContext().owner();
 
     //TODO: Look into chaining the operations
     Future<Void> future = Future.future();
