@@ -22,13 +22,14 @@ public interface Slixes {
     Future<Void> future = Future.future();
     future.setHandler(handler);
 
-    configHandler().compose(jsonObject -> httpServerCreator(jsonObject, router)).setHandler(ar -> {
-      if (ar.succeeded()) {
+    configHandler().compose(jsonObject -> httpServerCreator(jsonObject, router, bootHandler -> {
+      if (bootHandler.succeeded()) {
         future.complete();
       } else {
-        future.fail(ar.cause());
+        future.fail(bootHandler.cause());
       }
-    });
+
+    }));
   }
 
 
@@ -78,6 +79,32 @@ public interface Slixes {
     } catch (SlixesException e) {
       future.fail(e);
     }
+    return future;
+  }
+
+  private static Future<Void> httpServerCreator(final JsonObject httpConfig, Router router, Handler<AsyncResult<Void>> handler) {
+    Future<Void> future = Future.future();
+    future.setHandler(handler);
+
+    HttpServerCreator.create(vertx, httpConfig, createHandler -> {
+      if (createHandler.succeeded()) {
+        final CountDownLatch latch = new CountDownLatch(createHandler.result().size());
+        createHandler.result().forEach(entry ->
+          entry.requestHandler(router).listen(ar -> {
+            if (ar.succeeded()) {
+              latch.countDown();
+              if (latch.getCount() == 0) {
+                future.complete();
+              }
+            } else {
+              future.fail(ar.cause());
+            }
+          }));
+      } else {
+        future.fail(createHandler.cause());
+      }
+
+    });
     return future;
   }
 }
