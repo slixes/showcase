@@ -1,13 +1,13 @@
 # showcase
 
-##Local
+## Local
+
 Run locally (by default reads from `conf/config.json`)
 ```
 mvn clean package vertx:run  
 ```
 
-##Docker
-
+## Docker
 - Create docker image:
   ```
   mvn fabric8:build
@@ -16,7 +16,7 @@ mvn clean package vertx:run
   ```
   docker run -ti --name showcase  -v $(pwd)/conf/config.json:/usr/verticles/showcase/conf/config.json -p 8090:8090 -p 8443:8443 io.slixes/showcase:0.0.1-SNAPSHOT
   ```
-##Kubernetes 
+## Kubernetes 
 - Generate kubernetes resources:
   ```
   mvn fabric8:resource
