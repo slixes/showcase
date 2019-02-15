@@ -33,7 +33,6 @@ public interface Slixes {
     });
   }
 
-
   private static Future<JsonObject> configHandler() {
     Future<JsonObject> future = Future.future();
     final ConfigRetriever retriever = ConfigRetriever.create(vertx);
@@ -48,12 +47,12 @@ public interface Slixes {
     retriever.listen(configChange -> {
       System.out.println("Configuration change detected");
       if (!configChange.getNewConfiguration().equals(configChange.getPreviousConfiguration())) {
-        //TODO: make this async
-        vertx.close();
+        vertx.close(voidAsyncResult -> {
+          //TODO: Add logging here
+        });
       }
     });
     return future;
-
   }
 
   private static Future<Void> httpServerCreator(final JsonObject httpConfig, Router router, Handler<AsyncResult<Void>> handler) {
