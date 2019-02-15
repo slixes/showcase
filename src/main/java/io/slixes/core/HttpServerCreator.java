@@ -14,36 +14,10 @@ import java.util.List;
 
 public interface HttpServerCreator {
 
-
-  //TODO:Consider making this method async for consistency
-  static List<HttpServer> create(Vertx vertx, JsonObject cfg) throws SlixesException {
-    if (cfg.isEmpty() || !cfg.containsKey(SlixesType.HTTP.name().toLowerCase())) {
-      throw new SlixesException("Missing http configuration");
-    }
-    try {
-      JsonArray http = cfg.getJsonArray(SlixesType.HTTP.name().toLowerCase());
-      List<HttpServer> httpServers = new ArrayList<>();
-      http.forEach(httpConfig -> {
-        JsonObject httpClientOptionsJson = JsonObject.mapFrom(httpConfig);
-        final HttpServerOptions serverOptions = new HttpServerOptions(httpClientOptionsJson);
-        try {
-          httpServers.add(vertx.createHttpServer(serverOptions));
-        } catch (Exception ex) {
-          ex.printStackTrace();
-        }
-      });
-      return httpServers;
-    } catch (Exception ex) {
-      throw new SlixesException("Invalid configuration", ex);
-    }
-  }
-
-
-  static void create(Vertx vertx, JsonObject cfg, Handler<AsyncResult<List<HttpServer>>> handler) {
+  static void create(JsonObject cfg, Handler<AsyncResult<List<HttpServer>>> handler) {
+    Vertx vertx = Vertx.currentContext().owner();
     Future<List<HttpServer>> future = Future.future();
-
     future.setHandler(handler);
-
     if (cfg.isEmpty() || !cfg.containsKey(SlixesType.HTTP.name().toLowerCase())) {
       future.fail(new SlixesException("Missing http configuration"));
     } else {
