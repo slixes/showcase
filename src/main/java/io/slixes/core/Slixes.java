@@ -15,41 +15,31 @@ import java.util.concurrent.CountDownLatch;
 public interface Slixes {
 
 
+  Vertx vertx = Vertx.currentContext().owner();
+
   static void boot(Router router, Handler<AsyncResult<Void>> handler) {
 
-    final Vertx vertx = Vertx.currentContext().owner();
-
-    //TODO: Look into chaining the operations
     Future<Void> future = Future.future();
     future.setHandler(handler);
 
+    configHandler().compose(jsonObject -> httpServerCreator(jsonObject, router)).setHandler(ar -> {
+      if (ar.succeeded()) {
+        future.complete();
+      } else {
+        future.fail(ar.cause());
+      }
+    });
+  }
+
+
+  private static Future<JsonObject> configHandler() {
+    Future<JsonObject> future = Future.future();
     final ConfigRetriever retriever = ConfigRetriever.create(vertx);
     retriever.getConfig(configHandler -> {
       if (configHandler.succeeded()) {
-        try {
-          final JsonObject config = configHandler.result();
-          final List<HttpServer> stringHttpServerMap = HttpServerCreator.create(vertx, config);
-          if (!stringHttpServerMap.isEmpty()) {
-            final CountDownLatch latch = new CountDownLatch(stringHttpServerMap.size());
-            stringHttpServerMap.forEach(entry ->
-              entry.requestHandler(router).listen(ar -> {
-                if (ar.succeeded()) {
-                  latch.countDown();
-                  if (latch.getCount() == 0) {
-                    future.complete();
-                  }
-                } else {
-                  future.fail(ar.cause());
-                }
-              }));
-          } else {
-            future.fail("Nothing to boot, make sure the configuration contains at least one http configuration entry");
-          }
-        } catch (SlixesException e) {
-          future.fail(e.getCause());
-        }
+        future.complete(configHandler.result());
       } else {
-        future.fail("Unable to retrieve configuration");
+        future.fail(configHandler.cause());
       }
     });
 
@@ -60,7 +50,34 @@ public interface Slixes {
         vertx.close();
       }
     });
+    return future;
 
+  }
 
+  private static Future<Void> httpServerCreator(final JsonObject httpConfig, Router router) {
+    Future<Void> future = Future.future();
+    try {
+      final List<HttpServer> stringHttpServerMap = HttpServerCreator.create(vertx, httpConfig);
+
+      if (!stringHttpServerMap.isEmpty()) {
+        final CountDownLatch latch = new CountDownLatch(stringHttpServerMap.size());
+        stringHttpServerMap.forEach(entry ->
+          entry.requestHandler(router).listen(ar -> {
+            if (ar.succeeded()) {
+              latch.countDown();
+              if (latch.getCount() == 0) {
+                future.complete();
+              }
+            } else {
+              future.fail(ar.cause());
+            }
+          }));
+      } else {
+        future.fail("Nothing to boot, make sure the configuration contains at least one http configuration entry");
+      }
+    } catch (SlixesException e) {
+      future.fail(e);
+    }
+    return future;
   }
 }

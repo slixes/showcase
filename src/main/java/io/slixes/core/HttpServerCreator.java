@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface HttpServerCreator {
 
+
+  //TODO:Consider making this method async for consistency
   static List<HttpServer> create(Vertx vertx, JsonObject cfg) throws SlixesException {
     if (cfg.isEmpty() || !cfg.containsKey(SlixesType.HTTP.name().toLowerCase())) {
       throw new SlixesException("Missing http configuration");
