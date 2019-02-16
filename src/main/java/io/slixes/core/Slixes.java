@@ -17,24 +17,26 @@ public interface Slixes {
   static void boot(Router router, Handler<AsyncResult<Void>> handler) {
     Future<Void> future = Future.future();
     future.setHandler(handler);
-
-    configHandler().compose(jsonObject -> httpServerCreator(jsonObject, router, bootHandler -> {
-      if (bootHandler.succeeded()) {
-        future.complete();
-      } else {
-        future.fail(bootHandler.cause());
-      }
-    })).setHandler(ar -> {
-      if (ar.succeeded()) {
-        future.complete();
-      } else {
-        future.fail(ar.cause());
-      }
-    });
+    configHandler()
+      .compose(jsonObject -> httpServerCreator(jsonObject, router, bootHandler -> {
+        if (bootHandler.succeeded()) {
+          future.complete();
+        } else {
+          future.fail(bootHandler.cause());
+        }
+      }))
+      .setHandler(ar -> {
+        if (ar.succeeded()) {
+          future.complete();
+        } else {
+          future.fail(ar.cause());
+        }
+      });
   }
 
   private static Future<JsonObject> configHandler() {
     Future<JsonObject> future = Future.future();
+    //TODO: Allow passing of config retriever configuration
     final ConfigRetriever retriever = ConfigRetriever.create(vertx);
     retriever.getConfig(configHandler -> {
       if (configHandler.succeeded()) {
