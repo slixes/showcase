@@ -18,7 +18,7 @@
         "name": "Console-Appender",
         "target": "SYSTEM_OUT",
         "PatternLayout": {
-          "pattern": "%d [%t] %-5p %c - %m%n"
+          "pattern": "[%p] %d [%t] %x %c %M - %m%n"
         }
       },
       "File": {

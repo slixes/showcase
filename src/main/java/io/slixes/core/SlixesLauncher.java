@@ -16,13 +16,7 @@ public class SlixesLauncher extends Launcher {
 
   @Override
   public void beforeStartingVertx(VertxOptions options) {
-
-
-    logger.info("Before start");
-    logger.debug("Whatever");
-    logger.fatal("Something terrible is happening");
-    logger.warn("Watchout!");
-    logger.error("oh no!");
+    logger.info("Starting");
   }
 
   @Override
