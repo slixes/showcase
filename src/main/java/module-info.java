@@ -1,4 +1,4 @@
-open module io.slixes {
+module io.slixes.showcase {
   requires vertx.core;
   requires vertx.web;
   requires vertx.auth.oauth2;
