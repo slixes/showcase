@@ -17,8 +17,8 @@
       "Console": {
         "name": "Console-Appender",
         "target": "SYSTEM_OUT",
-        "JsonLayout": {
-          "complete" : true
+        "PatternLayout": {
+          "pattern": "%d [%t] %-5p %c - %m%n"
         }
       },
       "File": {
@@ -52,11 +52,11 @@
         "appender-ref": [
           {
             "ref": "Console-Appender",
-            "level": "info"
+            "level": "info, error, debug"
           },
           {
             "ref": "File-Appender",
-            "level": "error"
+            "level": "error, debug, info, warning"
           },
           {
             "ref": "RollingFile-Appender",

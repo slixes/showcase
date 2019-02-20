@@ -11,7 +11,11 @@ public interface PingHandler extends Handler<RoutingContext> {
   Logger logger = LogManager.getLogger(SlixesLauncher.class);
 
   static Handler<RoutingContext> create() {
-    logger.info("Ping ok");
-    return routingContext -> routingContext.response().end("Alive");
+
+    return routingContext -> {
+      logger.info("test");
+      routingContext.response().end("Alive");
+    };
+
   }
 }

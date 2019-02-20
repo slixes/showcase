@@ -17,8 +17,7 @@ public class SlixesLauncher extends Launcher {
   @Override
   public void beforeStartingVertx(VertxOptions options) {
 
-//    System.setProperty("vertx.logger-delegate-factory-class-name",
-//        "io.vertx.core.logging.Log4j2LogDelegateFactory");
+
     logger.info("Before start");
     logger.debug("Whatever");
     logger.fatal("Something terrible is happening");
