@@ -24,15 +24,16 @@
       "File": {
         "name": "File-Appender",
         "fileName": "${log-path}/logfile.log",
-        "JsonLayout": {
-          "complete": true
+        "PatternLayout": {
+          "pattern": "[%p] %d [%t] %x %c %M - %m%n"
         }
       },
       "RollingFile": {
         "name": "RollingFile-Appender",
         "fileName": "${log-path}/rollingfile.log",
         "filePattern": "${archive}/rollingfile.log.%d{yyyy-MM-dd-hh-mm}.gz",
-        "JsonLayout": {
+        "PatternLayout": {
+          "pattern": "[%p] %d [%t] %x %c %M - %m%n"
         },
         "Policies": {
           "SizeBasedTriggeringPolicy": {
