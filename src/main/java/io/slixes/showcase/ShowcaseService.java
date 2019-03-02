@@ -4,12 +4,11 @@ import io.slixes.core.Slixes;
 import io.slixes.showcase.handlers.ChainedHandler;
 import io.slixes.showcase.handlers.LogoutHandler;
 import io.slixes.showcase.handlers.PingHandler;
-import io.vertx.config.ConfigRetriever;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
-import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.LoggerFormat;
 import io.vertx.ext.web.handler.LoggerHandler;
 
 public class ShowcaseService extends AbstractVerticle {
@@ -18,6 +17,8 @@ public class ShowcaseService extends AbstractVerticle {
   public void start(Future<Void> startFuture) {
 
     try {
+
+
 
       final Router router = Router.router(vertx);
 
@@ -28,7 +29,7 @@ public class ShowcaseService extends AbstractVerticle {
 //                  .getJsonObject("keycloak");
 //              final OAuth2Auth oauth2 = KeycloakAuth
 //                  .create(vertx, OAuth2FlowType.PASSWORD, keycloakJson);
-          router.route().handler(LoggerHandler.create());
+          router.route().handler(LoggerHandler.create(true, LoggerFormat.SHORT));
           router.route().handler(BodyHandler.create());
           router.route("/ping").handler(PingHandler.create());
 //              router.post("/login").handler(LoginHandler.create(oauth2));

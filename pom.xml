@@ -44,10 +44,9 @@
   <properties>
     <!-- Dependencies -->
     <vertx.version>3.6.3</vertx.version>
-    <slf4j.version>1.7.25</slf4j.version>
-    <swagger.version>2.0.5</swagger.version>
-    <junit.version>5.3.1</junit.version>
-    <log4j.version>2.11.1</log4j.version>
+    <swagger.version>2.0.7</swagger.version>
+    <junit.version>5.4.0</junit.version>
+    <log4j.version>2.11.2</log4j.version>
     <!-- Plugins -->
     <vertx.maven.plugin.version>1.0.18</vertx.maven.plugin.version>
     <fabric8.maven.plugin.version>3.5.41</fabric8.maven.plugin.version>
@@ -55,9 +54,11 @@
     <vertx.verticle>io.slixes.showcase.ShowcaseService</vertx.verticle>
     <vertx.launcher>io.slixes.core.SlixesLauncher</vertx.launcher>
     <!-- Docker Settings -->
-    <docker.http.port>8443</docker.http.port>
+    <docker.http.port>8090</docker.http.port>
+    <docker.https.port>8443</docker.https.port>
     <!-- Kubernetes Settings -->
-    <kubernetes.http.port>30443</kubernetes.http.port>
+    <kubernetes.http.port>30090</kubernetes.http.port>
+    <kubernetes.https.port>30443</kubernetes.https.port>
   </properties>
 
   <dependencyManagement>
@@ -180,22 +181,13 @@
           </execution>
         </executions>
         <configuration>
-          <!--<redeploy>true</redeploy>-->
+          <redeploy>true</redeploy>
         </configuration>
       </plugin>
 
       <plugin>
         <groupId>io.fabric8</groupId>
         <artifactId>fabric8-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>start</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>build</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
           <images>
             <image>

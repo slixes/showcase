@@ -1,0 +1,76 @@
+{
+  "configuration": {
+    "name": "Default",
+    "properties": {
+      "property": [
+        {
+          "name": "log-path",
+          "value": "logs"
+        },
+        {
+          "name": "archive",
+          "value": "${log-path}/archive"
+        }
+      ]
+    },
+    "appenders": {
+      "Console": {
+        "name": "Console-Appender",
+        "target": "SYSTEM_OUT",
+        "PatternLayout": {
+          "pattern": "[%p] %d [%t] %x %c %M - %m%n"
+        }
+      },
+      "File": {
+        "name": "File-Appender",
+        "fileName": "${log-path}/logfile.log",
+        "PatternLayout": {
+          "pattern": "[%p] %d [%t] %x %c %M - %m%n"
+        }
+      },
+      "RollingFile": {
+        "name": "RollingFile-Appender",
+        "fileName": "${log-path}/rollingfile.log",
+        "filePattern": "${archive}/rollingfile.log.%d{yyyy-MM-dd-hh-mm}.gz",
+        "PatternLayout": {
+          "pattern": "[%p] %d [%t] %x %c %M - %m%n"
+        },
+        "Policies": {
+          "SizeBasedTriggeringPolicy": {
+            "size": "1 KB"
+          }
+        },
+        "DefaultRolloverStrategy": {
+          "max": "30"
+        }
+      }
+    },
+    "loggers": {
+      "logger": {
+        "name": "io.slixes.showcase",
+        "level": "debug",
+        "additivity": "false",
+        "appender-ref": [
+          {
+            "ref": "Console-Appender",
+            "level": "info, error, debug"
+          },
+          {
+            "ref": "File-Appender",
+            "level": "error, debug, info, warning"
+          },
+          {
+            "ref": "RollingFile-Appender",
+            "level": "debug"
+          }
+        ]
+      },
+      "root": {
+        "level": "debug",
+        "appender-ref": {
+          "ref": "Console-Appender"
+        }
+      }
+    }
+  }
+}

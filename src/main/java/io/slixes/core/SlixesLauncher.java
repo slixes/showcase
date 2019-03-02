@@ -3,8 +3,12 @@ package io.slixes.core;
 import io.vertx.core.Launcher;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SlixesLauncher extends Launcher {
+
+  private static final Logger logger = LogManager.getLogger(SlixesLauncher.class);
 
   public static void main(String[] args) {
     new SlixesLauncher().dispatch(args);
@@ -12,22 +16,22 @@ public class SlixesLauncher extends Launcher {
 
   @Override
   public void beforeStartingVertx(VertxOptions options) {
-    System.out.println("Before starting vertx");
+    logger.info("Before start");
   }
 
   @Override
   public void afterStartingVertx(Vertx vertx) {
-    System.out.println("After starting vertx");
+    logger.info("After starting vertx");
   }
 
 
   @Override
   public void beforeStoppingVertx(Vertx vertx) {
-    System.out.println("Before stopping vertx");
+    logger.info("Before stopping vertx");
   }
 
   @Override
   public void afterStoppingVertx() {
-    System.out.println("After stopping vertx");
+    logger.info("After stopping vertx");
   }
 }
