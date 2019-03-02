@@ -15,7 +15,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /ping
-              port: ${docker.http.port}
+              port: ${docker.https.port}
               scheme: HTTPS
             periodSeconds: 15
             timeoutSeconds: 5
