@@ -19,16 +19,13 @@ public interface HttpServerCreator {
     Future<List<HttpServer>> future = Future.future();
     future.setHandler(handler);
     if (cfg.isEmpty() || !cfg.containsKey(SlixesType.HTTP.name().toLowerCase())) {
-      future.fail(new SlixesException("Missing http configuration"));
+      future.fail(new SlixesException("Http configuration is missing"));
     } else {
       final JsonArray http = cfg.getJsonArray(SlixesType.HTTP.name().toLowerCase());
-
       List<HttpServer> httpServers = new ArrayList<>();
-      http.forEach(httpConfig -> {
-        JsonObject httpClientOptionsJson = JsonObject.mapFrom(httpConfig);
-        final HttpServerOptions serverOptions = new HttpServerOptions(httpClientOptionsJson);
-        httpServers.add(vertx.createHttpServer(serverOptions));
-      });
+      for (Object httpConfig : http) {
+        httpServers.add(vertx.createHttpServer(new HttpServerOptions(JsonObject.mapFrom(httpConfig))));
+      }
       future.complete(httpServers);
     }
   }
