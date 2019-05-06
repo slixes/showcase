@@ -57,6 +57,14 @@
     <!-- Kubernetes Settings -->
     <kubernetes.http.port>30090</kubernetes.http.port>
     <kubernetes.https.port>30443</kubernetes.https.port>
+
+    <kubernetes.liveness.path>/health</kubernetes.liveness.path>
+    <kubernetes.readiness.path>/ready</kubernetes.readiness.path>
+    <kubernetes.check.period>15</kubernetes.check.period>
+    <kubernetes.check.timeout>2</kubernetes.check.timeout>
+    <kubernetes.check.threshold.success>1</kubernetes.check.threshold.success>
+    <kubernetes.check.threshold.failure>2</kubernetes.check.threshold.failure>
+
     <!--Vertx Run -->
     <vertx.verticle>io.slixes.showcase.ShowcaseService</vertx.verticle>
     <vertx.launcher>io.slixes.core.SlixesLauncher</vertx.launcher>

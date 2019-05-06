@@ -14,22 +14,20 @@ spec:
           name: ${project.artifactId}
           readinessProbe:
             httpGet:
-              path: /ready
+              path: ${kubernetes.readiness.path}
               port: ${docker.http.port}
-              scheme: HTTP
-            periodSeconds: 15
-            timeoutSeconds: 5
-            successThreshold: 1
-            failureThreshold: 2
+            periodSeconds: ${kubernetes.check.period}
+            timeoutSeconds: ${kubernetes.check.timeout}
+            successThreshold: ${kubernetes.check.threshold.success}
+            failureThreshold: ${kubernetes.check.threshold.failure}
           livenessProbe:
             httpGet:
-              path: /health
+              path: ${kubernetes.liveness.path}
               port: ${docker.http.port}
-              scheme: HTTP
-            periodSeconds: 30
-            timeoutSeconds: 5
-            successThreshold: 1
-            failureThreshold: 2
+            periodSeconds: ${kubernetes.check.period}
+            timeoutSeconds: ${kubernetes.check.timeout}
+            successThreshold: ${kubernetes.check.threshold.success}
+            failureThreshold: ${kubernetes.check.threshold.failure}
           volumeMounts:
             - name: ${project.artifactId}-service-config
               mountPath: /usr/verticles/${project.artifactId}/conf
