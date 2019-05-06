@@ -3,7 +3,7 @@ package io.slixes.showcase;
 import io.slixes.core.Slixes;
 import io.slixes.showcase.handlers.ChainedHandler;
 import io.slixes.showcase.handlers.LogoutHandler;
-import io.slixes.showcase.handlers.PingHandler;
+import io.slixes.showcase.handlers.HealthHandler;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.ext.web.Router;
@@ -31,10 +31,10 @@ public class ShowcaseService extends AbstractVerticle {
 //                  .create(vertx, OAuth2FlowType.PASSWORD, keycloakJson);
           router.route().handler(LoggerHandler.create(true, LoggerFormat.SHORT));
           router.route().handler(BodyHandler.create());
-          router.route("/ping").handler(PingHandler.create());
+          router.route("/health").handler(HealthHandler.create());
+          router.route("/ready").handler(HealthHandler.create());
 //              router.post("/login").handler(LoginHandler.create(oauth2));
           router.route("/logout").handler(LogoutHandler.create());
-
           router.route("/chain").handler(ChainedHandler.create());
           startFuture.complete();
         } else {
