@@ -12,6 +12,24 @@ spec:
         - image: ${project.groupId}/${project.artifactId}:${project.version}
           imagePullPolicy: IfNotPresent
           name: ${project.artifactId}
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: ${docker.http.port}
+              scheme: HTTP
+            periodSeconds: 15
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 2
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: ${docker.http.port}
+              scheme: HTTP
+            periodSeconds: 30
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 2
           volumeMounts:
             - name: ${project.artifactId}-service-config
               mountPath: /usr/verticles/${project.artifactId}/conf

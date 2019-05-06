@@ -50,9 +50,6 @@
     <!-- Plugins -->
     <vertx.maven.plugin.version>1.0.18</vertx.maven.plugin.version>
     <fabric8.maven.plugin.version>4.1.0</fabric8.maven.plugin.version>
-    <!-- Service Settings -->
-
-
     <!-- Docker Settings -->
     <docker.registry>docker.io</docker.registry>
     <docker.http.port>8090</docker.http.port>
@@ -60,17 +57,9 @@
     <!-- Kubernetes Settings -->
     <kubernetes.http.port>30090</kubernetes.http.port>
     <kubernetes.https.port>30443</kubernetes.https.port>
-
-
     <!--Vertx Run -->
     <vertx.verticle>io.slixes.showcase.ShowcaseService</vertx.verticle>
     <vertx.launcher>io.slixes.core.SlixesLauncher</vertx.launcher>
-
-
-    <!-- fmp configuration -->
-    <vertx.health.port>${docker.http.port}</vertx.health.port>
-    <vertx.health.readiness.path>/health</vertx.health.readiness.path>
-    <vertx.health.liveness.path>/ready</vertx.health.liveness.path>
   </properties>
 
   <dependencyManagement>
@@ -214,15 +203,6 @@
         <groupId>io.fabric8</groupId>
         <artifactId>fabric8-maven-plugin</artifactId>
         <configuration>
-          <enricher>
-            <config>
-              <f8-healthcheck-vertx>
-                <port></port>
-                <initialDelay>3</initialDelay>
-                <period>3</period>
-              </f8-healthcheck-vertx>
-            </config>
-          </enricher>
           <images>
             <image>
               <name>${project.groupId}/${project.artifactId}:${project.version}</name>

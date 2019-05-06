@@ -3,9 +3,11 @@ package io.slixes.showcase;
 import io.slixes.core.Slixes;
 import io.slixes.showcase.handlers.ChainedHandler;
 import io.slixes.showcase.handlers.LogoutHandler;
-import io.slixes.showcase.handlers.HealthHandler;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
+import io.vertx.ext.healthchecks.HealthCheckHandler;
+import io.vertx.ext.healthchecks.HealthChecks;
+import io.vertx.ext.healthchecks.Status;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.LoggerFormat;
@@ -18,8 +20,6 @@ public class ShowcaseService extends AbstractVerticle {
 
     try {
 
-
-
       final Router router = Router.router(vertx);
 
       Slixes.boot(router, ar -> {
@@ -31,11 +31,25 @@ public class ShowcaseService extends AbstractVerticle {
 //                  .create(vertx, OAuth2FlowType.PASSWORD, keycloakJson);
           router.route().handler(LoggerHandler.create(true, LoggerFormat.SHORT));
           router.route().handler(BodyHandler.create());
-          router.route("/health").handler(HealthHandler.create());
-          router.route("/ready").handler(HealthHandler.create());
 //              router.post("/login").handler(LoginHandler.create(oauth2));
           router.route("/logout").handler(LogoutHandler.create());
           router.route("/chain").handler(ChainedHandler.create());
+
+          HealthCheckHandler healthCheckHandler = HealthCheckHandler.createWithHealthChecks(HealthChecks.create(vertx));
+
+          healthCheckHandler.register("healthcheck", 2000, future -> {
+            System.out.println("Health ok");
+            future.complete(Status.OK());
+          });
+          router.route("/health").handler(healthCheckHandler);
+
+          HealthCheckHandler readinessHandler = HealthCheckHandler.createWithHealthChecks(HealthChecks.create(vertx));
+          readinessHandler.register("ready", 2000, future -> {
+            System.out.println("Service is ready ");
+            future.complete(Status.OK());
+          });
+          router.route("/ready").handler(readinessHandler);
+
           startFuture.complete();
         } else {
           System.err.println("Error booting service [{}]" + startFuture.cause().getMessage());
