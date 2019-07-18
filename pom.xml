@@ -6,14 +6,13 @@
   <parent>
     <groupId>io.slixes</groupId>
     <artifactId>slixes-parent</artifactId>
-    <version>1.0.9</version>
+    <version>1.1.2</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.slixes</groupId>
   <artifactId>showcase</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-
   <name>Slixes::Showcase</name>
 
   <developers>
@@ -43,7 +42,7 @@
 
   <properties>
     <!-- Dependencies -->
-    <vertx.version>3.7.0</vertx.version>
+    <vertx.version>3.8.0</vertx.version>
     <swagger.version>2.0.8</swagger.version>
     <junit.version>5.4.0</junit.version>
     <log4j.version>2.11.2</log4j.version>
@@ -53,10 +52,8 @@
     <!-- Docker Settings -->
     <docker.registry>docker.io</docker.registry>
     <docker.http.port>8090</docker.http.port>
-    <docker.https.port>8443</docker.https.port>
     <!-- Kubernetes Settings -->
     <kubernetes.http.port>30090</kubernetes.http.port>
-    <kubernetes.https.port>30443</kubernetes.https.port>
 
     <kubernetes.liveness.path>/health</kubernetes.liveness.path>
     <kubernetes.readiness.path>/ready</kubernetes.readiness.path>
@@ -221,7 +218,6 @@
                 </tags>
                 <ports>
                   <port>${docker.http.port}</port>
-                  <port>${docker.https.port}</port>
                 </ports>
                 <cmd>
                   <exec>

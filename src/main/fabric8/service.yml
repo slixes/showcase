@@ -12,9 +12,5 @@ spec:
       protocol: TCP
       port: ${docker.http.port}
       nodePort: ${kubernetes.http.port}
-    - name: https
-      protocol: TCP
-      port: ${docker.https.port}
-      nodePort: ${kubernetes.https.port}
   selector:
     name: ${project.artifactId}
