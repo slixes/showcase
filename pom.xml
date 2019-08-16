@@ -44,10 +44,10 @@
     <!-- Dependencies -->
     <vertx.version>3.8.0</vertx.version>
     <swagger.version>2.0.8</swagger.version>
-    <junit.version>5.4.0</junit.version>
-    <log4j.version>2.11.2</log4j.version>
+    <junit.version>5.5.1</junit.version>
+    <log4j.version>2.12.1</log4j.version>
     <!-- Plugins -->
-    <vertx.maven.plugin.version>1.0.18</vertx.maven.plugin.version>
+    <vertx.maven.plugin.version>1.0.20</vertx.maven.plugin.version>
     <fabric8.maven.plugin.version>4.1.0</fabric8.maven.plugin.version>
     <!-- Docker Settings -->
     <docker.registry>docker.io</docker.registry>
