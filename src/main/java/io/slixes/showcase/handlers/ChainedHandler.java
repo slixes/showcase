@@ -14,10 +14,8 @@ public interface ChainedHandler extends Handler<RoutingContext> {
     return routingContext ->
       dumbOne()
         .compose(aVoid -> anAsyncAction())
-        .compose(s -> anotherAsyncAction(s)).setHandler(ar -> routingContext.response().end(ar.succeeded() ? ar.result() : ar.cause().getMessage()));
-
+        .compose(ChainedHandler::anotherAsyncAction).setHandler(ar -> routingContext.response().end(ar.succeeded() ? ar.result() : ar.cause().getMessage()));
   }
-
 
   private static Future<Void> dumbOne() {
     Promise<Void> promise = Promise.promise();
@@ -31,7 +29,7 @@ public interface ChainedHandler extends Handler<RoutingContext> {
   }
 
   private static Future<String> anAsyncAction() {
-    Promise<String>  promise = Promise.promise();
+    Promise<String> promise = Promise.promise();
     // mimic something that take times
     Vertx.currentContext().owner().setTimer(100, l -> promise.complete("world"));
     System.out.println("anAsyncAction completed");

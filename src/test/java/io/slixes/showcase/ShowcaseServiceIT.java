@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(VertxExtension.class)
-public class ShowcaseServiceIT {
+class ShowcaseServiceIT {
 
   @Test
   void start_server() {

@@ -4,7 +4,6 @@ import io.slixes.core.Slixes;
 import io.slixes.showcase.handlers.ChainedHandler;
 import io.slixes.showcase.handlers.LogoutHandler;
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.ext.healthchecks.HealthCheckHandler;
 import io.vertx.ext.healthchecks.HealthChecks;

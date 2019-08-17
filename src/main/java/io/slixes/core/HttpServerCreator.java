@@ -13,7 +13,7 @@ import io.vertx.core.json.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface HttpServerCreator {
+interface HttpServerCreator {
 
   static void create(JsonObject cfg, Handler<AsyncResult<List<HttpServer>>> handler) {
     Vertx vertx = Vertx.currentContext().owner();

@@ -5,7 +5,6 @@ module io.slixes.showcase {
   requires vertx.config;
   requires vertx.health.check;
   requires io.netty.codec.http;
-  requires com.fasterxml.jackson.annotation;
   requires vertx.auth.common;
   requires org.apache.logging.log4j;
 }
