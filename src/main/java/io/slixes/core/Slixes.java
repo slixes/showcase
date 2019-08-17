@@ -4,6 +4,7 @@ import io.vertx.config.ConfigRetriever;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
@@ -15,34 +16,36 @@ public interface Slixes {
   Vertx vertx = Vertx.currentContext().owner();
 
   static void boot(Router router, Handler<AsyncResult<Void>> handler) {
-    Future<Void> future = Future.future();
+    Promise<Void> promise = Promise.promise();
+    Future<Void> future = promise.future();
     future.setHandler(handler);
-    configHandler()
+    configHandler().future()
       .compose(jsonObject -> httpServerCreator(jsonObject, router, bootHandler -> {
         if (bootHandler.succeeded()) {
-          future.complete();
+          promise.complete();
         } else {
-          future.fail(bootHandler.cause());
+          promise.fail(bootHandler.cause());
         }
-      }))
+      }).future())
       .setHandler(ar -> {
         if (ar.succeeded()) {
-          future.complete();
+          promise.complete();
         } else {
-          future.fail(ar.cause());
+          promise.fail(ar.cause());
         }
       });
   }
 
-  private static Future<JsonObject> configHandler() {
-    Future<JsonObject> future = Future.future();
+  private static Promise<JsonObject> configHandler() {
+    Promise<JsonObject> promise = Promise.promise();
+    Future<JsonObject> future = promise.future();
     //TODO: Allow passing of config retriever configuration
     final ConfigRetriever retriever = ConfigRetriever.create(vertx);
     retriever.getConfig(configHandler -> {
       if (configHandler.succeeded()) {
-        future.complete(configHandler.result());
+        promise.complete(configHandler.result());
       } else {
-        future.fail(configHandler.cause());
+        promise.fail(configHandler.cause());
       }
     });
 
@@ -54,11 +57,13 @@ public interface Slixes {
         });
       }
     });
-    return future;
+    return promise;
   }
 
-  private static Future<Void> httpServerCreator(final JsonObject httpConfig, Router router, Handler<AsyncResult<Void>> handler) {
-    Future<Void> future = Future.future();
+  private static Promise<Void> httpServerCreator(final JsonObject httpConfig, Router router, Handler<AsyncResult<Void>> handler) {
+
+    Promise<Void> promise = Promise.promise();
+    Future<Void> future = promise.future();
     future.setHandler(handler);
 
     HttpServerCreator.create(httpConfig, createHandler -> {
@@ -69,16 +74,17 @@ public interface Slixes {
             if (ar.succeeded()) {
               latch.countDown();
               if (latch.getCount() == 0) {
-                future.complete();
+                promise.complete();
               }
             } else {
-              future.fail(ar.cause());
+              promise.fail(ar.cause());
+
             }
           }));
       } else {
-        future.fail(createHandler.cause());
+        promise.fail(createHandler.cause());
       }
     });
-    return future;
+    return promise;
   }
 }

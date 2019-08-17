@@ -2,6 +2,7 @@ package io.slixes.showcase.handlers;
 
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.RoutingContext;
 
@@ -19,30 +20,30 @@ public interface ChainedHandler extends Handler<RoutingContext> {
 
 
   private static Future<Void> dumbOne() {
-    Future<Void> future = Future.future();
+    Promise<Void> promise = Promise.promise();
+    Future<Void> future = promise.future();
     // mimic something that take times
     Vertx.currentContext().owner().setTimer(100, l -> {
       System.out.println("dumbOne completed");
-      future.complete();
+      promise.complete();
     });
     return future;
   }
 
   private static Future<String> anAsyncAction() {
-    Future<String> future = Future.future();
+    Promise<String>  promise = Promise.promise();
     // mimic something that take times
-    Vertx.currentContext().owner().setTimer(100, l -> future.complete("world"));
+    Vertx.currentContext().owner().setTimer(100, l -> promise.complete("world"));
     System.out.println("anAsyncAction completed");
-    return future;
-
+    return promise.future();
   }
 
   private static Future<String> anotherAsyncAction(String name) {
-    Future<String> future = Future.future();
+    Promise<String> promise = Promise.promise();
     // mimic something that take times
-    Vertx.currentContext().owner().setTimer(100, l -> future.complete("hello " + name));
+    Vertx.currentContext().owner().setTimer(100, l -> promise.complete("hello " + name));
     System.out.println("anotherAsyncAction completed");
-    return future;
+    return promise.future();
   }
 
 }

@@ -50,6 +50,7 @@
     <vertx.maven.plugin.version>1.0.20</vertx.maven.plugin.version>
     <fabric8.maven.plugin.version>4.1.0</fabric8.maven.plugin.version>
     <!-- Docker Settings -->
+    <docker.image>${project.groupId}/${project.artifactId}:${project.version}</docker.image>
     <docker.registry>docker.io</docker.registry>
     <docker.http.port>8090</docker.http.port>
     <!-- Kubernetes Settings -->
@@ -210,45 +211,10 @@
         <configuration>
           <images>
             <image>
-              <name>${project.groupId}/${project.artifactId}:${project.version}</name>
+              <name>${docker.image}</name>
               <build>
-                <from>adoptopenjdk/openjdk12:alpine</from>
-                <tags>
-                  <tag>${project.version}</tag>
-                </tags>
-                <ports>
-                  <port>${docker.http.port}</port>
-                </ports>
-                <cmd>
-                  <exec>
-                    <arg>vertx</arg>
-                    <arg>run</arg>
-                    <arg>${vertx.verticle}</arg>
-                    <arg>-cp</arg>
-                    <arg>
-                      /usr/verticles/${project.artifactId}/${project.artifactId}-${project.version}.jar
-                    </arg>
-                    <arg>-ha</arg>
-                    <arg>--launcher-class=${vertx.launcher}</arg>
-                  </exec>
-                </cmd>
-                <runCmds>
-                  <runcmd>apk add --update bash wget tar &amp;&amp; rm -rf /var/cache/apk/*</runcmd>
-                  <runcmd>wget -P /var/cache/vertx/ \
-                    https://bintray.com/artifact/download/vertx/downloads/vert.x-${vertx.version}.tar.gz
-                  </runcmd>
-                  <runcmd>mkdir -p /usr/local</runcmd>
-                  <runcmd>tar xvzf /var/cache/vertx/vert.x-${vertx.version}.tar.gz -C /usr/local
-                  </runcmd>
-                  <runcmd>chmod +x /usr/local/vertx/bin/vertx</runcmd>
-                  <runcmd>chmod -R 700 /usr/verticles</runcmd>
-                  <runcmd>chmod -R 700 /usr/verticles/*</runcmd>
-                  <runcmd>ln -s $VERTX_HOME/bin/vertx /usr/local/bin/</runcmd>
-                </runCmds>
-                <env>
-                  <VERTX_HOME>/usr/local/vertx</VERTX_HOME>
-                </env>
-                <workdir>/usr/verticles/${project.artifactId}</workdir>
+                <dockerFileDir>.</dockerFileDir>
+                <filter>@</filter>
                 <assembly>
                   <basedir>/</basedir>
                   <inline>
@@ -275,6 +241,7 @@
           </images>
         </configuration>
       </plugin>
+
     </plugins>
   </build>
 </project>

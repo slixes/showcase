@@ -5,6 +5,7 @@ import io.slixes.showcase.handlers.ChainedHandler;
 import io.slixes.showcase.handlers.LogoutHandler;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 import io.vertx.ext.healthchecks.HealthCheckHandler;
 import io.vertx.ext.healthchecks.HealthChecks;
 import io.vertx.ext.healthchecks.Status;
@@ -16,7 +17,7 @@ import io.vertx.ext.web.handler.LoggerHandler;
 public class ShowcaseService extends AbstractVerticle {
 
   @Override
-  public void start(Future<Void> startFuture) {
+  public void start(Promise<Void> startPromise) {
 
     try {
 
@@ -50,10 +51,10 @@ public class ShowcaseService extends AbstractVerticle {
           });
           router.route("/ready").handler(readinessHandler);
 
-          startFuture.complete();
+          startPromise.complete();
         } else {
-          System.err.println("Error booting service [{}]" + startFuture.cause().getMessage());
-          startFuture.fail(ar.cause());
+          System.err.println("Error booting service [{}]" + startPromise.future().cause().getMessage());
+          startPromise.fail(ar.cause());
           vertx.close();
         }
       });
@@ -63,8 +64,8 @@ public class ShowcaseService extends AbstractVerticle {
   }
 
   @Override
-  public void stop(Future<Void> stopFuture) {
+  public void stop(Promise<Void> stopPromise) {
     System.out.println("Shut down hook invoked");
-    stopFuture.tryComplete();
+    stopPromise.tryComplete();
   }
 }
