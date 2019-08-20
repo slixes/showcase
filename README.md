@@ -29,3 +29,12 @@ mvn clean package vertx:run
   ```
   mvn fabric8:undeploy
   ```
+
+- Debug:
+``` mvn fabric:debug```
+
+### Maybe useful commands
+
+Run in a docker container
+```docker run -p 8090:8090 -v /Users/fmatar/workspace/src/slixes/showcase/conf/config.json:/usr/verticles/showcase/conf/config.json showcase:0.0.1-SNAPSHOT
+```

@@ -1,17 +1,7 @@
 {
-  "http": [
-    {
-      "port": 8443,
-      "ssl": true,
-      "keyStoreOptions": {
-        "password": "testpassword",
-        "path": "test.jks"
-      }
-    },
-    {
-      "port": 8090
-    }
-  ],
+  "http": {
+    "port": 8090
+  },
   "auth": {
     "keycloak": {
       "realm": "Slixes",

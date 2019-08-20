@@ -2,23 +2,19 @@ package io.slixes.core;
 
 import io.vertx.config.ConfigRetriever;
 import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpServer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 
-import java.util.concurrent.CountDownLatch;
-
 public interface Slixes {
-
   Vertx vertx = Vertx.currentContext().owner();
 
   static void boot(Router router, Handler<AsyncResult<Void>> handler) {
     Promise<Void> promise = Promise.promise();
-    Future<Void> future = promise.future();
-    future.setHandler(handler);
+    promise.future().setHandler(handler);
     configHandler().future()
       .compose(jsonObject -> httpServerCreator(jsonObject, router, bootHandler -> {
         if (bootHandler.succeeded()) {
@@ -38,8 +34,6 @@ public interface Slixes {
 
   private static Promise<JsonObject> configHandler() {
     Promise<JsonObject> promise = Promise.promise();
-    Future<JsonObject> future = promise.future();
-    //TODO: Allow passing of config retriever configuration
     final ConfigRetriever retriever = ConfigRetriever.create(vertx);
     retriever.getConfig(configHandler -> {
       if (configHandler.succeeded()) {
@@ -60,27 +54,18 @@ public interface Slixes {
     return promise;
   }
 
-  private static Promise<Void> httpServerCreator(final JsonObject httpConfig, Router router, Handler<AsyncResult<Void>> handler) {
-
-    Promise<Void> promise = Promise.promise();
-    Future<Void> future = promise.future();
-    future.setHandler(handler);
-
+  private static Promise<HttpServer> httpServerCreator(final JsonObject httpConfig, Router router, Handler<AsyncResult<HttpServer>> handler) {
+    Promise<HttpServer> promise = Promise.promise();
+    promise.future().setHandler(handler);
     HttpServerCreator.create(httpConfig, createHandler -> {
       if (createHandler.succeeded()) {
-        final CountDownLatch latch = new CountDownLatch(createHandler.result().size());
-        createHandler.result().forEach(entry ->
-          entry.requestHandler(router).listen(ar -> {
-            if (ar.succeeded()) {
-              latch.countDown();
-              if (latch.getCount() == 0) {
-                promise.complete();
-              }
-            } else {
-              promise.fail(ar.cause());
-
-            }
-          }));
+        createHandler.result().requestHandler(router).listen(ar -> {
+          if (ar.succeeded()) {
+            promise.complete(createHandler.result());
+          } else {
+            promise.fail(ar.cause());
+          }
+        });
       } else {
         promise.fail(createHandler.cause());
       }

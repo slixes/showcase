@@ -47,9 +47,9 @@
     <log4j.version>2.12.1</log4j.version>
     <!-- Plugins -->
     <vertx.maven.plugin.version>1.0.20</vertx.maven.plugin.version>
-    <fabric8.maven.plugin.version>4.1.0</fabric8.maven.plugin.version>
+    <fabric8.maven.plugin.version>4.2.0</fabric8.maven.plugin.version>
     <!-- Docker Settings -->
-    <docker.image>${project.groupId}/${project.artifactId}:${project.version}</docker.image>
+    <docker.image>${project.artifactId}:${project.version}</docker.image>
     <docker.registry>docker.io</docker.registry>
     <docker.http.port>8090</docker.http.port>
     <!-- Kubernetes Settings -->
@@ -186,10 +186,9 @@
           <version>${fabric8.maven.plugin.version}</version>
           <executions>
             <execution>
-              <id>fmp</id>
+              <id>fabric8</id>
               <goals>
                 <goal>resource</goal>
-                <goal>helm</goal>
                 <goal>build</goal>
               </goals>
             </execution>
@@ -224,13 +223,6 @@
                         </source>
                         <outputDirectory>/usr/verticles/${project.artifactId}</outputDirectory>
                         <fileMode>0600</fileMode>
-                      </file>
-                      <file>
-                        <source>
-                          ${project.basedir}/test.jks
-                        </source>
-                        <outputDirectory>/usr/verticles/${project.artifactId}</outputDirectory>
-                        <fileMode>0700</fileMode>
                       </file>
                     </files>
                   </inline>

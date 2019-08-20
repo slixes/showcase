@@ -15,20 +15,17 @@ import java.util.List;
 
 interface HttpServerCreator {
 
-  static void create(JsonObject cfg, Handler<AsyncResult<List<HttpServer>>> handler) {
+  static Promise<HttpServer> create(JsonObject cfg, Handler<AsyncResult<HttpServer>> handler) {
     Vertx vertx = Vertx.currentContext().owner();
-    Promise<List<HttpServer>> promise = Promise.promise();
-    Future<List<HttpServer>> future = promise.future();
-    future.setHandler(handler);
+    Promise<HttpServer> promise = Promise.promise();
+    promise.future().setHandler(handler);
     if (cfg.isEmpty() || !cfg.containsKey(SlixesType.HTTP.name().toLowerCase())) {
       promise.fail(new SlixesException("Http configuration is missing"));
     } else {
-      final JsonArray http = cfg.getJsonArray(SlixesType.HTTP.name().toLowerCase());
-      List<HttpServer> httpServers = new ArrayList<>();
-      for (Object httpConfig : http) {
-        httpServers.add(vertx.createHttpServer(new HttpServerOptions(JsonObject.mapFrom(httpConfig))));
-      }
-      promise.complete(httpServers);
+      final JsonObject httpConfig = cfg.getJsonObject(SlixesType.HTTP.name().toLowerCase());
+      HttpServer httpServer = vertx.createHttpServer(new HttpServerOptions(JsonObject.mapFrom(httpConfig)));
+      promise.complete(httpServer);
     }
+    return promise;
   }
 }
