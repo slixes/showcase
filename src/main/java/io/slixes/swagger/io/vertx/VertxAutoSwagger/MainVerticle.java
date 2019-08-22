@@ -9,26 +9,18 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.media.Schema;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
-import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.ext.web.Router;
-import io.vertx.ext.web.handler.BodyHandler;
-import io.vertx.ext.web.handler.CorsHandler;
-import io.vertx.ext.web.handler.ErrorHandler;
-import io.vertx.ext.web.handler.StaticHandler;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import static io.vertx.core.http.HttpHeaders.*;
 
 public class MainVerticle extends AbstractVerticle {
 
@@ -40,12 +32,23 @@ public class MainVerticle extends AbstractVerticle {
   private EndPoints endPoints;
 
   @Override
-  public void start(Future<Void> startFuture) throws Exception {
+  public void start(Future<Void> startFuture) {
 
     endPoints = new EndPoints();
 
     server = vertx.createHttpServer(createOptions());
-    server.requestHandler(configurationRouter());
+
+    Router router = Util.router();
+    router.get("/swagger").handler(res -> res.response().setStatusCode(200).end(Json.pretty(openAPIDoc(router))));
+
+    // Routing section - this is where we declare which end points we want to use
+    router.get("/products").handler(endPoints::fetchAllProducts);
+    router.get("/product/:productId").handler(endPoints::fetchProduct);
+    router.post("/product").handler(endPoints::addProduct);
+    router.put("/product").handler(endPoints::putProduct);
+    router.delete("/product/:deleteProductId").handler(endPoints::deleteProduct);
+
+    server.requestHandler(router);
     server.listen(result -> {
       if (result.succeeded()) {
         startFuture.complete();
@@ -70,53 +73,6 @@ public class MainVerticle extends AbstractVerticle {
     options.setPort(PORT);
     return options;
   }
-
-  private Router configurationRouter() {
-    Router router = Router.router(vertx);
-    router.route().consumes(APPLICATION_JSON);
-    router.route().produces(APPLICATION_JSON);
-    router.route().handler(BodyHandler.create());
-
-    Set<String> allowedHeaders = new HashSet<>();
-    allowedHeaders.add("auth");
-    allowedHeaders.add("Content-Type");
-
-    Set<HttpMethod> allowedMethods = new HashSet<>();
-    allowedMethods.add(HttpMethod.GET);
-    allowedMethods.add(HttpMethod.POST);
-    allowedMethods.add(HttpMethod.OPTIONS);
-    allowedMethods.add(HttpMethod.DELETE);
-    allowedMethods.add(HttpMethod.PATCH);
-    allowedMethods.add(HttpMethod.PUT);
-
-    router.route().handler(CorsHandler.create("*").allowedHeaders(allowedHeaders).allowedMethods(allowedMethods));
-
-    router.route().handler(context -> {
-      context.response().headers().add(CONTENT_TYPE, APPLICATION_JSON);
-      context.next();
-    });
-    router.route().failureHandler(ErrorHandler.create(true));
-
-    // Routing section - this is where we declare which end points we want to use
-    router.get("/products").handler(endPoints::fetchAllProducts);
-    router.get("/product/:productId").handler(endPoints::fetchProduct);
-    router.post("/product").handler(endPoints::addProduct);
-    router.put("/product").handler(endPoints::putProduct);
-    router.delete("/product/:deleteProductId").handler(endPoints::deleteProduct);
-
-
-    // Serve the Swagger JSON spec out on /swagger
-    router.get("/swagger").handler(res -> {
-      res.response()
-        .setStatusCode(200)
-        .end(Json.pretty(openAPIDoc(router)));
-    });
-
-    // Serve the Swagger UI out on /doc/index.html
-    router.route("/doc/*").handler(StaticHandler.create().setCachingEnabled(false).setWebRoot("webroot/swagger-ui"));
-    return router;
-  }
-
 
   private void mapParameters(Field field, Map<String, Object> map) {
     Class type = field.getType();
@@ -153,15 +109,10 @@ public class MainVerticle extends AbstractVerticle {
       type.equals(String.class);
   }
 
-  public ImmutableSet<ClassPath.ClassInfo> getClassesInPackage(String pckgname) {
-    try {
-      ClassPath classPath = ClassPath.from(Thread.currentThread().getContextClassLoader());
-      ImmutableSet<ClassPath.ClassInfo> classes = classPath.getTopLevelClasses(pckgname);
-      return classes;
-
-    } catch (Exception e) {
-      return null;
-    }
+  public ImmutableSet<ClassPath.ClassInfo> getClassesInPackage(String pckgname) throws IOException {
+    ClassPath classPath = ClassPath.from(Thread.currentThread().getContextClassLoader());
+    ImmutableSet<ClassPath.ClassInfo> classes = classPath.getTopLevelClasses(pckgname);
+    return classes;
   }
 
   public OpenAPI openAPIDoc(Router router) {
@@ -179,37 +130,41 @@ public class MainVerticle extends AbstractVerticle {
 
 
     // Generate the SCHEMA section of Swagger, using the definitions in the Model folder
-    ImmutableSet<ClassPath.ClassInfo> modelClasses = getClassesInPackage("io.vertx.VertxAutoSwagger.Model");
+    try {
+      ImmutableSet<ClassPath.ClassInfo> modelClasses = getClassesInPackage("io.vertx.VertxAutoSwagger.Model");
+      Map<String, Object> map = new HashMap<>();
 
-    Map<String, Object> map = new HashMap<>();
+      for (ClassPath.ClassInfo modelClass : modelClasses) {
 
-    for (ClassPath.ClassInfo modelClass : modelClasses) {
+        Field[] fields = FieldUtils.getFieldsListWithAnnotation(modelClass.load(), Required.class).toArray(new
+          Field[0]);
+        List<String> requiredParameters = new ArrayList<>();
 
-      Field[] fields = FieldUtils.getFieldsListWithAnnotation(modelClass.load(), Required.class).toArray(new
-        Field[0]);
-      List<String> requiredParameters = new ArrayList<>();
+        for (Field requiredField : fields) {
+          requiredParameters.add(requiredField.getName());
+        }
 
-      for (Field requiredField : fields) {
-        requiredParameters.add(requiredField.getName());
+        fields = modelClass.load().getDeclaredFields();
+
+        for (Field field : fields) {
+          mapParameters(field, map);
+        }
+
+        openAPIDoc.schema(modelClass.getSimpleName(),
+          new Schema()
+            .title(modelClass.getSimpleName())
+            .type("object")
+            .required(requiredParameters)
+            .properties(map)
+        );
+        map = new HashMap<String, Object>();
+
       }
-
-      fields = modelClass.load().getDeclaredFields();
-
-      for (Field field : fields) {
-        mapParameters(field, map);
-      }
-
-      openAPIDoc.schema(modelClass.getSimpleName(),
-        new Schema()
-          .title(modelClass.getSimpleName())
-          .type("object")
-          .required(requiredParameters)
-          .properties(map)
-      );
-      map = new HashMap<String, Object>();
-
+      //
+      return openAPIDoc;
+    } catch (IOException ex) {
+      //TODO:Log a warning that no models were found. It would be probably better to scan the classes instead of specifying a package to scan
+      return null;
     }
-    //
-    return openAPIDoc;
   }
 }
