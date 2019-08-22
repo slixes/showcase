@@ -45,7 +45,7 @@ public class MainVerticle extends AbstractVerticle {
     endPoints = new EndPoints();
 
     server = vertx.createHttpServer(createOptions());
-    server.requestHandler(configurationRouter()::accept);
+    server.requestHandler(configurationRouter());
     server.listen(result -> {
       if (result.succeeded()) {
         startFuture.complete();
@@ -104,62 +104,16 @@ public class MainVerticle extends AbstractVerticle {
     router.put("/product").handler(endPoints::putProduct);
     router.delete("/product/:deleteProductId").handler(endPoints::deleteProduct);
 
-    OpenAPI openAPIDoc = OpenApiRoutePublisher.publishOpenApiSpec(
-      router,
-      "spec",
-      "Vertx Swagger Auto Generation",
-      "1.0.0",
-      "http://" + HOST + ":" + PORT + "/"
-    );
-
-    /* Tagging section. This is where we can group end point operations; The tag name is then used in the end point annotation
-     */
-    openAPIDoc.addTagsItem(new io.swagger.v3.oas.models.tags.Tag().name("Product").description("Product operations"));
-
-
-    // Generate the SCHEMA section of Swagger, using the definitions in the Model folder
-    ImmutableSet<ClassPath.ClassInfo> modelClasses = getClassesInPackage("io.vertx.VertxAutoSwagger.Model");
-
-    Map<String, Object> map = new HashMap<String, Object>();
-
-    for (ClassPath.ClassInfo modelClass : modelClasses) {
-
-      Field[] fields = FieldUtils.getFieldsListWithAnnotation(modelClass.load(), Required.class).toArray(new
-        Field[0]);
-      List<String> requiredParameters = new ArrayList<String>();
-
-      for (Field requiredField : fields) {
-        requiredParameters.add(requiredField.getName());
-      }
-
-      fields = modelClass.load().getDeclaredFields();
-
-      for (Field field : fields) {
-        mapParameters(field, map);
-      }
-
-      openAPIDoc.schema(modelClass.getSimpleName(),
-        new Schema()
-          .title(modelClass.getSimpleName())
-          .type("object")
-          .required(requiredParameters)
-          .properties(map)
-      );
-
-      map = new HashMap<String, Object>();
-    }
-    //
 
     // Serve the Swagger JSON spec out on /swagger
     router.get("/swagger").handler(res -> {
       res.response()
         .setStatusCode(200)
-        .end(Json.pretty(openAPIDoc));
+        .end(Json.pretty(openAPIDoc(router)));
     });
 
     // Serve the Swagger UI out on /doc/index.html
     router.route("/doc/*").handler(StaticHandler.create().setCachingEnabled(false).setWebRoot("webroot/swagger-ui"));
-
     return router;
   }
 
@@ -173,10 +127,10 @@ public class MainVerticle extends AbstractVerticle {
       primitiveSchema.type(field.getType().getSimpleName());
       map.put(field.getName(), primitiveSchema);
     } else {
-      HashMap<String, Object> subMap = new HashMap<String, Object>();
+      HashMap<String, Object> subMap = new HashMap<>();
 
       if (isPrimitiveOrWrapper(componentType)) {
-        HashMap<String, Object> arrayMap = new HashMap<String, Object>();
+        HashMap<String, Object> arrayMap = new HashMap<>();
         arrayMap.put("type", componentType.getSimpleName() + "[]");
         subMap.put("type", arrayMap);
       } else {
@@ -208,5 +162,54 @@ public class MainVerticle extends AbstractVerticle {
     } catch (Exception e) {
       return null;
     }
+  }
+
+  public OpenAPI openAPIDoc(Router router) {
+    OpenAPI openAPIDoc = OpenApiRoutePublisher.publishOpenApiSpec(
+      router,
+      "spec",
+      "Vertx Swagger Auto Generation",
+      "1.0.0",
+      "http://" + HOST + ":" + PORT + "/"
+    );
+
+    /* Tagging section. This is where we can group end point operations; The tag name is then used in the end point annotation
+     */
+    openAPIDoc.addTagsItem(new io.swagger.v3.oas.models.tags.Tag().name("Product").description("Product operations"));
+
+
+    // Generate the SCHEMA section of Swagger, using the definitions in the Model folder
+    ImmutableSet<ClassPath.ClassInfo> modelClasses = getClassesInPackage("io.vertx.VertxAutoSwagger.Model");
+
+    Map<String, Object> map = new HashMap<>();
+
+    for (ClassPath.ClassInfo modelClass : modelClasses) {
+
+      Field[] fields = FieldUtils.getFieldsListWithAnnotation(modelClass.load(), Required.class).toArray(new
+        Field[0]);
+      List<String> requiredParameters = new ArrayList<>();
+
+      for (Field requiredField : fields) {
+        requiredParameters.add(requiredField.getName());
+      }
+
+      fields = modelClass.load().getDeclaredFields();
+
+      for (Field field : fields) {
+        mapParameters(field, map);
+      }
+
+      openAPIDoc.schema(modelClass.getSimpleName(),
+        new Schema()
+          .title(modelClass.getSimpleName())
+          .type("object")
+          .required(requiredParameters)
+          .properties(map)
+      );
+      map = new HashMap<String, Object>();
+
+    }
+    //
+    return openAPIDoc;
   }
 }

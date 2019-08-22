@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * @author ckaratza
  * Exposes the OpenAPI spec as a vertx route.
  */
 public final class OpenApiRoutePublisher {
@@ -22,11 +21,6 @@ public final class OpenApiRoutePublisher {
       generatedSpecs.put(path, openAPI);
       spec = Optional.of(openAPI);
     }
-    if (spec.isPresent()) {
-      Optional<OpenAPI> finalSpec = spec;
-      return finalSpec.get();
-    } else {
-      return new OpenAPI();
-    }
+    return spec.isPresent() ? spec.get() : new OpenAPI();
   }
 }
