@@ -63,7 +63,7 @@
     <kubernetes.check.threshold.failure>2</kubernetes.check.threshold.failure>
 
     <!--Vertx Run -->
-    <vertx.verticle>io.slixes.showcase.ShowcaseService</vertx.verticle>
+    <vertx.verticle>io.slixes.swagger.io.vertx.VertxAutoSwagger.MainVerticle</vertx.verticle>
     <vertx.launcher>io.slixes.core.SlixesLauncher</vertx.launcher>
   </properties>
 
@@ -155,8 +155,23 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>25.1-jre</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.28</version>
+    </dependency>
+    <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>swagger-ui</artifactId>
+      <version>3.23.5</version>
     </dependency>
   </dependencies>
 
@@ -232,7 +247,6 @@
           </images>
         </configuration>
       </plugin>
-
     </plugins>
   </build>
 </project>
