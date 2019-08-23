@@ -1,6 +1,5 @@
 package io.slixes.swagger.io.vertx.VertxAutoSwagger;
 
-import io.swagger.v3.core.util.Json;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.web.Router;
