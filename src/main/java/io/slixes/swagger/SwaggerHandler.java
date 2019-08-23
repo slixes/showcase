@@ -93,7 +93,7 @@ public interface SwaggerHandler extends Handler<RoutingContext> {
 
       // Generate the SCHEMA section of Swagger, using the definitions in the Model folder
       try {
-        ImmutableSet<ClassPath.ClassInfo> modelClasses = getClassesInPackage("io.vertx.VertxAutoSwagger.Model");
+        ImmutableSet<ClassPath.ClassInfo> modelClasses = getClassesInPackage("io.slixes.showcase.model");
         Map<String, Object> map = new HashMap<>();
 
         for (ClassPath.ClassInfo modelClass : modelClasses) {
