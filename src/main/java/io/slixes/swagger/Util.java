@@ -1,4 +1,4 @@
-package io.slixes.swagger.io.vertx.VertxAutoSwagger;
+package io.slixes.swagger;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpMethod;

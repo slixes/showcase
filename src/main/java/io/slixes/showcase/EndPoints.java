@@ -1,9 +1,9 @@
-package io.slixes.swagger.io.vertx.VertxAutoSwagger;
+package io.slixes.showcase;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.slixes.swagger.io.vertx.VertxAutoSwagger.Model.Product;
-import io.slixes.swagger.io.vertx.VertxAutoSwagger.Model.Products;
+import io.slixes.showcase.Model.Product;
+import io.slixes.showcase.Model.Products;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;

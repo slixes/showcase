@@ -1,4 +1,4 @@
-package io.slixes.swagger.io.vertx.VertxAutoSwagger.Model;
+package io.slixes.showcase.Model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

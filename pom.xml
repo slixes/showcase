@@ -63,7 +63,7 @@
     <kubernetes.check.threshold.failure>2</kubernetes.check.threshold.failure>
 
     <!--Vertx Run -->
-    <vertx.verticle>io.slixes.swagger.io.vertx.VertxAutoSwagger.MainVerticle</vertx.verticle>
+    <vertx.verticle>io.slixes.showcase.MainVerticle</vertx.verticle>
     <vertx.launcher>io.slixes.core.SlixesLauncher</vertx.launcher>
   </properties>
 

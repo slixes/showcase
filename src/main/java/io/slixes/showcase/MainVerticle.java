@@ -1,26 +1,13 @@
-package io.slixes.swagger.io.vertx.VertxAutoSwagger;
+package io.slixes.showcase;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.reflect.ClassPath;
-import io.slixes.swagger.generator.OpenApiRoutePublisher;
-import io.slixes.swagger.generator.Required;
-import io.swagger.v3.core.util.Json;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.media.Schema;
+import io.slixes.showcase.EndPoints;
+import io.slixes.swagger.SwaggerHandler;
+import io.slixes.swagger.Util;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.ext.web.Router;
-import org.apache.commons.lang3.reflect.FieldUtils;
-
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class MainVerticle extends AbstractVerticle {
 

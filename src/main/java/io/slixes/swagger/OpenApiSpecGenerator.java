@@ -1,4 +1,4 @@
-package io.slixes.swagger.generator;
+package io.slixes.swagger;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.models.OpenAPI;

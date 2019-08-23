@@ -1,7 +1,7 @@
-package io.slixes.swagger.io.vertx.VertxAutoSwagger.Model;
+package io.slixes.showcase.Model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.slixes.swagger.generator.Required;
+import io.slixes.swagger.Required;
 
 public class Product {
 

@@ -1,4 +1,4 @@
-package io.slixes.swagger.generator;
+package io.slixes.swagger;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;

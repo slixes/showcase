@@ -1,4 +1,4 @@
-package io.slixes.swagger.generator;
+package io.slixes.swagger;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -1,9 +1,7 @@
-package io.slixes.swagger.io.vertx.VertxAutoSwagger;
+package io.slixes.swagger;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;
-import io.slixes.swagger.generator.OpenApiRoutePublisher;
-import io.slixes.swagger.generator.Required;
 import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.media.Schema;
