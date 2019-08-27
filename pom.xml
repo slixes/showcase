@@ -41,10 +41,15 @@
 
   <properties>
     <!-- Dependencies -->
-    <vertx.version>3.8.0</vertx.version>
-    <swagger.version>2.0.8</swagger.version>
+    <vertx.version>3.8.1</vertx.version>
+    <swagger.version>2.0.9</swagger.version>
     <junit.version>5.5.1</junit.version>
     <log4j.version>2.12.1</log4j.version>
+    <slf4j.version>1.7.28</slf4j.version>
+    <guava.version>28.0-jre</guava.version>
+    <swagger-ui.version>3.23.5</swagger-ui.version>
+    <assert4j.version>3.13.2</assert4j.version>
+    <immutables.version>2.7.4</immutables.version>
     <!-- Plugins -->
     <vertx.maven.plugin.version>1.0.20</vertx.maven.plugin.version>
     <fabric8.maven.plugin.version>4.2.0</fabric8.maven.plugin.version>
@@ -103,6 +108,32 @@
         <scope>import</scope>
         <type>pom</type>
       </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.webjars</groupId>
+        <artifactId>swagger-ui</artifactId>
+        <version>${swagger-ui.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${assert4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.immutables</groupId>
+        <artifactId>value</artifactId>
+        <version>${immutables.version}</version>
+        <scope>provided</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -145,6 +176,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
@@ -157,7 +193,6 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>25.1-jre</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -166,12 +201,15 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.28</version>
     </dependency>
     <dependency>
       <groupId>org.webjars</groupId>
       <artifactId>swagger-ui</artifactId>
-      <version>3.23.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.immutables</groupId>
+      <artifactId>value</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
