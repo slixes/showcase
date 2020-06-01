@@ -18,16 +18,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public interface SwaggerHandler extends Handler<RoutingContext> {
+public interface OpenApiHandler extends Handler<RoutingContext> {
 
-  static SwaggerHandler create(Router router) {
-    return new SwaggerHandlerImpl(router);
+  static OpenApiHandler create(Router router) {
+    return new OpenApiHandlerImpl(router);
   }
 
-  class SwaggerHandlerImpl implements SwaggerHandler {
+  class OpenApiHandlerImpl implements OpenApiHandler {
     Router router;
 
-    public SwaggerHandlerImpl(Router router) {
+    public OpenApiHandlerImpl(Router router) {
       this.router = router;
     }
 

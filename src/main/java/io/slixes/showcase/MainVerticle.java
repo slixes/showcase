@@ -1,10 +1,9 @@
 package io.slixes.showcase;
 
-import io.slixes.showcase.EndPoints;
-import io.slixes.swagger.SwaggerHandler;
+import io.slixes.swagger.OpenApiHandler;
 import io.slixes.swagger.Util;
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Future;
+import io.vertx.core.Promise;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.ext.web.Router;
@@ -19,14 +18,14 @@ public class MainVerticle extends AbstractVerticle {
   private EndPoints endPoints;
 
   @Override
-  public void start(Future<Void> startFuture) {
+  public void start(Promise<Void> startFuture) {
 
     endPoints = new EndPoints();
 
     server = vertx.createHttpServer(createOptions());
 
     Router router = Util.router();
-    router.get("/swagger").handler(SwaggerHandler.create(router));
+    router.get("/swagger").handler(OpenApiHandler.create(router));
 
     // Routing section - this is where we declare which end points we want to use
     router.get("/products").handler(endPoints::fetchAllProducts);
@@ -38,6 +37,7 @@ public class MainVerticle extends AbstractVerticle {
     server.requestHandler(router).listen(result -> {
       if (result.succeeded()) {
         startFuture.complete();
+        System.out.println("Shit has started fine");
       } else {
         startFuture.fail(result.cause());
       }
@@ -45,12 +45,12 @@ public class MainVerticle extends AbstractVerticle {
   }
 
   @Override
-  public void stop(Future<Void> future) {
+  public void stop(Promise<Void> promise) {
     if (server == null) {
-      future.complete();
+      promise.complete();
       return;
     }
-    server.close(future.completer());
+    server.close(promise.future());
   }
 
   private HttpServerOptions createOptions() {
