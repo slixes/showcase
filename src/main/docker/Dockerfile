@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk12:slim
+FROM adoptopenjdk/openjdk13:slim
 ENV VERTX_HOME=/usr/local/vertx
 ENV JAVA_ENABLE_DEBUG=true
 ENV JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,address=*:5005,server=y,suspend=n"
